@@ -1,0 +1,58 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "static-footer",
+      "blocks": {
+        "static-footer-0": {
+          "type": "menu",
+          "settings": {
+            "menu": "information"
+          }
+        },
+        "1498182586280": {
+          "type": "menu",
+          "settings": {
+            "menu": "top-sellers"
+          }
+        },
+        "rich_text_WHPUch": {
+          "type": "rich_text",
+          "settings": {
+            "title": "Mailing Address",
+            "text": "<p>12036 N. Tracey Rd Hayden, ID 83835<\/p><p><strong>QUESTIONS?<\/strong><\/p><p>Call Us <a href=\"tel: 8008486989\">(800) 848-6989<\/a><\/p>"
+          }
+        },
+        "newsletter_zUGVdK": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Newsletter",
+            "text": "<p>Join our Key Points Newsletter!<\/p>"
+          }
+        },
+        "social_accounts_7aTz6U": {
+          "type": "social_accounts",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "static-footer-0",
+        "1498182586280",
+        "rich_text_WHPUch",
+        "newsletter_zUGVdK",
+        "social_accounts_7aTz6U"
+      ],
+      "settings": {
+        "show_follow_on_shop": false,
+        "payment_icons": true,
+        "show_locale_selector": false,
+        "show_currency_selector": false,
+        "additional_menu": "my-account"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

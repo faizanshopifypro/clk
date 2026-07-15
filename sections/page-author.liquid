@@ -1,0 +1,77 @@
+<section class="author--container page-content rte">
+    <div class="author-post-container">                
+      <div class="author-post-content">
+          <h3 class="author-post-title">{{ page.title }}</h3>
+        {% if page.content != blank %}
+          <p>{{ page.content }} </p>
+        {% endif %}
+     </div>
+    <div class="author-post-thumb">
+        {% assign img = page.metafields.page.author_image | first %} 
+          <img src="{{ img.src }}" alt="{{ img.alt}}">
+      </div>
+  </div>
+
+{% paginate blogs['news'].articles by blogs['news'].articles_count %}
+{% assign count = 0 %}
+    <ul class="blog--inner">
+      {%- for article in blogs['news'].articles -%}
+        {% if article.author==page.title %}
+          {% assign count = count | plus: 1 %}
+          {% if count == 10 %} {% break %} {% else %}
+              {%
+              render 'article-excerpt',
+              article: article
+              %}
+          {% endif %}
+        {% endif %} 
+      {%- endfor -%}
+    </ul> 
+  </section>  
+{% endpaginate %}
+
+{% schema %}
+  {
+    "name": "Author Pages",
+    "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_rss_link",
+      "label": "Show RSS link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date published",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show post author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show post excerpt",
+      "default": true
+    },
+    {
+      "type": "article",
+      "id": "featured_post",
+      "label": "Featured post"
+    },
+    {
+      "type": "range",
+      "id": "posts_per_page_range",
+      "label": "Posts per page",
+      "min": 6,
+      "max": 12,
+      "step": 3,
+      "default": 9
+    }
+  ]
+  }
+{% endschema %}

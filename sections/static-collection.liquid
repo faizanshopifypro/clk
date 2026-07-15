@@ -1,0 +1,849 @@
+{%- liquid
+  assign filter_block = nil
+  assign sidebar_blocks = false
+  assign menu_block_count = 0
+  assign products_per_row = section.settings.products_per_row
+
+  for block in section.blocks
+    if block.type == 'filter'
+      assign filter_block = block
+      assign sidebar_blocks = true
+    elsif block.type == 'menu'
+      assign sidebar_blocks = true
+      assign menu_block_count = menu_block_count | plus: 1
+    endif
+  endfor
+
+  assign filter_type = 'tag'
+  if filter_block and filter_block.settings.filter_option == 'faceted'
+    assign filter_type = 'faceted'
+  endif
+
+  capture section_type
+    if filter_type == 'faceted'
+      echo 'static-collection-faceted-filters'
+    else
+      echo 'static-collection'
+    endif
+  endcapture
+
+  assign current_tag_handles = ''
+
+  for tag in current_tags
+    assign current_tag = tag | handle
+    assign current_tag_handles = current_tag_handles | append: current_tag
+    unless forloop.last
+      assign current_tag_handles = current_tag_handles | append: '|'
+    endunless
+  endfor
+
+  assign current_tag_array = current_tag_handles | split: '|'
+
+  assign show_sidebar = false
+  assign show_filters = true
+  assign show_filter_trigger = false
+
+  if filter_block == nil or filter_block.settings.filter_option == 'tag' and collection.all_tags.size == 0
+    assign show_filters = false
+  endif
+
+  if sidebar_blocks
+    # Sidebar toggle is used on mobile only, and will only show Filters
+    if show_filters or menu_block_count > 0
+      assign show_filter_trigger = true
+    endif
+
+    # Sidebar to show only if there are tags in the collection, or there are menus
+    if sidebar_blocks or show_filters
+      assign show_sidebar = true
+    endif
+  endif
+
+  assign paginate_by = section.settings.products_per_page_range
+
+  capture collection_classes
+    # Add extra space after string to prevent string coercion in the result output
+    if show_sidebar
+      echo 'layout--has-sidebar '
+    else
+      echo 'layout--no-sidebar '
+    endif
+
+    if section.settings.default_view == 'grid-view'
+      echo 'productgrid-gridview'
+    else
+      echo 'productgrid-listview'
+    endif
+  endcapture
+-%}
+
+<script
+  type="application/json"
+  data-section-type="{{ section_type | strip }}"
+  data-section-id="{{ section.id }}"
+  data-section-data
+>
+  {
+    "show_filter_product_count": {{ filter_block.settings.show_filter_product_count | json }},
+    "product_count": {{ collection.products_count | json }},
+    "filter_type": {{ filter_type | json }},
+    "filter_groups": {{ filter_block.settings.filter_groups | json }},
+    "filter_style": {{ filter_block.settings.filter_style | json }},
+    "no_matched_products_text": {{ 'general.accessibility.no_matched_products' | t: tag: '*tag*' | json }},
+    "context": {
+      "see_more": {{ 'general.general.see_more' | t | json }},
+      "see_less": {{ 'general.general.see_less' | t | json }},
+      "grid_list": {{ section.settings.default_view | json }},
+      "collectionUrl": {{ collection.url | default: '/collections/all' | json }},
+      "current_tags": {{ current_tag_array | json }}
+    },
+    "enable_product_compare": {{ settings.enable_product_compare | json }}
+  }
+</script>
+
+{% style %}
+  #shopify-section-{{ section.id }} .subcollections-list__content {
+    grid-template-columns: repeat(7, minmax(auto, 1fr));
+  }
+  @media only screen and (max-width: 860px) {
+    #shopify-section-{{ section.id }} .subcollections-list__content {
+      grid-template-columns: repeat(5, minmax(auto, 1fr));
+    }
+  }
+  @media only screen and (max-width: 480px) {
+    #shopify-section-{{ section.id }} .subcollections-list__content {
+      grid-template-columns: repeat(3, minmax(auto, 1fr));
+    }
+  }
+  ul.collection-filters__filter.collection-filters__filter-list {
+    max-height: 300px;
+    overflow: auto;
+}
+/* Hide scrollbar background - only small thumb visible */
+
+ul.collection-filters__filter.collection-filters__filter-list::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    display:none;
+}
+ul.collection-filters__filter.collection-filters__filter-list::-webkit-scrollbar-button {
+    display: none !important;
+    height: 0;
+    width: 0;
+}
+ul.collection-filters__filter.collection-filters__filter-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+ul.collection-filters__filter.collection-filters__filter-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+     width: 3px;
+}
+
+ul.collection-filters__filter.collection-filters__filter-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Firefox */
+ul.collection-filters__filter.collection-filters__filter-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+.search-main{
+    height: unset;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+.collection-search-wrapper {
+    position: relative;
+    margin: 20px 0;
+}
+.boost-pfs-in-collection-search-button{
+    position: absolute;
+    background: 0 0;
+    outline: 0;
+    border: 0;
+    top: 0;
+    right: 0;
+    padding: 12px 20px;
+    cursor: default;
+}
+.in-collection-search-input{
+      width: 100%;
+    height: 40px;
+    padding: 10px 24px;
+    color: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    background: #fbfbfb;
+    border: 1px solid rgba(34, 34, 34, .2);
+    box-sizing: border-box;
+    border-radius: 50px;
+}
+.atc--product-details--price-value.money, .atc--product-details--title, .atc--product-details--price-quantity{
+  color:#000000;
+}
+.metafield-rich_text_field p{
+  font-size:16px !important;
+}
+{% endstyle %}
+
+{% assign current_title = collection.title %}
+{% assign menu = linklists.shop-only.links %}
+
+{% assign breadcrumb = "" %}
+{% assign found = false %}
+
+{% for level1 in menu %}
+  {%- comment %}<locksmith:2583>{% endcomment -%}
+    {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: level1, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+  {%- comment %}</locksmith:2583>{% endcomment -%}
+  {% if level1.title == current_title %}
+    {% assign breadcrumb = level1.title %}
+    {% assign found = true %}
+  {% endif %}
+
+  {% for level2 in level1.links %}
+    {%- comment %}<locksmith:fc2c>{% endcomment -%}
+      {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: level2, subject_parent: level1, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+    {%- comment %}</locksmith:fc2c>{% endcomment -%}
+    {% if level2.title == current_title %}
+      {% assign breadcrumb = level1.title | append: '|' | append: level2.title %}
+      {% assign found = true %}
+    {% endif %}
+
+    {% for level3 in level2.links %}
+      {%- comment %}<locksmith:f17a>{% endcomment -%}
+        {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: level3, subject_parent: level2, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+      {%- comment %}</locksmith:f17a>{% endcomment -%}
+      {% if level3.title == current_title %}
+        {% assign breadcrumb = level1.title | append: '|' | append: level2.title | append: '|' | append: level3.title %}
+        {% assign found = true %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+ <nav class="breadcrumbs-container" aria-label="Breadcrumbs">
+{% if breadcrumb != "" %}
+  {% assign crumbs = breadcrumb | split: "|" %}
+
+    {% assign temp_menu = menu %}
+    {% for crumb in crumbs %}
+      {% for link in temp_menu %}
+        {%- comment %}<locksmith:cac8>{% endcomment -%}
+          {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: link, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+        {%- comment %}</locksmith:cac8>{% endcomment -%}
+        {% if link.title == crumb %}
+          <span>
+            <a href="{{ link.url }}">{{ crumb }}</a>
+          </span>
+           <span class="breadcrumbs-delimiter" aria-hidden="true">
+      <svg aria-hidden="true" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg" width="8" height="5" viewBox="0 0 8 5">
+  <path fill="currentColor" fill-rule="evenodd" d="M1.002.27L.29.982l3.712 3.712L7.714.982 7.002.27l-3 3z"></path>
+</svg>
+
+    </span>
+          {% assign temp_menu = link.links %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </nav>
+{% endif %}
+{% paginate collection.products by paginate_by %}
+  <div class="productgrid--outer {{ collection_classes | strip_newlines }}" data-productgrid-outer>
+    <div class="productgrid--masthead">
+
+      {% if section.settings.show_collection_image and collection.image %}
+        <figure class="collection--image">
+          {%
+            render 'rimg',
+            img: collection.image,
+            size: '1350x',
+            lazy: false,
+            canvas: false,
+            attr: 'fetchpriority="high"'
+          %}
+        </figure>
+      {% endif %}
+
+      <h1 class="collection--title">
+        {{ collection.title }}
+      </h1>
+
+      {% if collection.description != blank %}
+        <div class="collection--description rte" data-collection-description>
+          {{ collection.description }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.enable_subcollection and linklists[collection.handle].links.size > 0 %}
+        {%
+          render 'subcollections-collection',
+          type: 'block',
+          block: section,
+          layout_type: 'slideshow',
+        %}
+        <div class="subcollections-collection__border"></div>
+      {% endif %}
+    </div>
+    {% if show_sidebar %}
+      {%
+        render 'product-grid-sidebar',
+        menu_depth: section.settings.menu_depth_range,
+        context: collection
+      %}
+    {% endif %}
+
+    <div class="productgrid--wrapper">
+
+      {% if show_filter_trigger or section.settings.sort_by or section.settings.grid_list %}
+        {% capture utility_class %}
+          productgrid--utils
+
+          {% if show_filter_trigger or section.settings.sort_by or section.settings.grid_list %}
+            productgrid--utils--visible-mobile
+          {% endif %}
+
+          {% unless section.settings.sort_by or section.settings.grid_list %}
+            productgrid--utils--hidden-desktop
+          {% endunless %}
+        {% endcapture %}
+        <div class="productgrid--utils-sticky-intersection" data-utils-intersection-target></div>
+        <nav
+          class="
+            {{ utility_class | strip_newlines }}
+            productgrid--utils-container
+            productgrid--utils-sticky
+          "
+          aria-label="{{ 'general.accessibility.nav_collection_utilities' | t }}"
+          data-sticky-utils
+        >
+          {% if show_filter_trigger %}
+            {% liquid
+              assign filter_count = 0
+              if filter_block.settings.filter_option == 'faceted'
+                for filter in collection.filters
+                  if filter.type == 'price_range' and filter.min_value.value or filter.max_value.value
+                    assign filter_count = filter_count | plus: 1
+                  elsif filter.type == 'list'
+                    assign filter_count = filter_count | plus: filter.active_values.size
+                  endif
+                endfor
+              else
+                if current_tags.size > 0
+                  assign filter_count = current_tags.size
+                endif
+              endif
+
+              capture button_label
+                if show_filters
+                  echo 'product_grid.filters.title_count' | t: count: filter_count
+                else
+                  echo 'product_grid.menus.title' | t
+                endif
+              endcapture
+            %}
+            <div class="productgrid--utils utils-filter">
+              <button
+                class="utils-filter-button"
+                type="button"
+                aria-label="{{ button_label }}"
+                data-productgrid-trigger-filters
+              >
+                <span class="utils-filter-icon">
+                  {% render 'icon-library', id: 'icon-filters' %}
+                </span>
+                <span class="utils-filter-text">
+                  {{- button_label -}}
+                </span>
+              </button>
+            </div>
+          {% endif %}
+
+          {%- if section.settings.sort_by -%}
+            {%-
+              render 'product-grid-sortby',
+              type: 'select',
+            -%}
+          {%- endif -%}
+
+          {% if section.settings.grid_list or settings.enable_product_compare %}
+            <div
+              class="
+                productgrid--utils
+                utils-view
+                {% if section.settings.grid_list == false %}
+                  utils-hide
+                {% endif %}
+              "
+            >
+              <div class="utils-view-container">
+                {% if settings.enable_product_compare %}
+                  <div class="utils-compare-toggle">
+                    <span class="utils-compare-toggle__label">
+                      {{ 'product_compare.compare' | t }}
+                    </span>
+
+                    <div class="utils-compare-toggle__container">
+                      <input
+                        class="
+                          utils-compare-toggle__checkbox
+                          visually-hidden
+                        "
+                        id="utils-compare-toggle__checkbox"
+                        aria-label="{{ 'product_compare.compare' | t }}"
+                        type="checkbox"
+                        data-compare-toggle
+                      >
+
+                      <label class="utils-compare-toggle__checkbox-label" for="utils-compare-toggle__checkbox"></label>
+
+                      {%
+                        render 'icon-library',
+                        id: 'icon-checkmark',
+                        icon_class: 'utils-compare-toggle__checkbox-icon',
+                      %}
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if section.settings.grid_list %}
+                  <div class="utils-viewtoggle">
+                    <span class="utils-viewtoggle-label">
+                      {{ 'product_grid.view_as.title' | t }}
+                    </span>
+
+                    <button
+                      class="utils-viewtoggle-button {% if section.settings.default_view == 'grid-view' %}active{% endif %}"
+                      data-collection-view="grid-view"
+                      aria-label="grid view"
+                    >
+                      {% render 'icon-library', id: 'icon-grid' %}
+                    </button>
+
+                    <button
+                      class="utils-viewtoggle-button {% if section.settings.default_view == 'list-view' %}active{% endif %}"
+                      data-collection-view="list-view"
+                      aria-label="list view"
+                    >
+                      {% render 'icon-library', id: 'icon-list' %}
+                    </button>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {%- endif -%}
+        </nav>
+      {% endif %}
+      <div class="search-main">
+        <div class="collection-search-wrapper">
+            <input aria-label="Search for products in this collection" class="in-collection-search-input" id="searchajaxcollpditm" type="text" placeholder="Find products on this page.">
+                <button type="button" class="boost-pfs-in-collection-search-button">
+                    <svg aria-hidden="true" width="15" height="16" viewBox="0 0 15 16" fill="none">
+                        <path d="M14.4323 14.4001L10.4594 10.4801C12.1215 8.32012 11.9188 5.20012 9.93233 3.24012C7.74314 1.08012 4.17558 1.08012 1.94585 3.24012C-0.243342 5.40012 -0.243342 8.92012 1.94585 11.1201C2.9999 12.1601 4.41882 12.7601 5.91882 12.7601C7.13504 12.7601 8.31071 12.3601 9.28368 11.6401L13.2567 15.5601C13.4188 15.7201 13.6215 15.8001 13.8242 15.8001C14.0269 15.8001 14.2296 15.7201 14.3918 15.5601C14.7567 15.2001 14.7567 14.7201 14.4323 14.4001ZM5.95936 11.1201C4.90531 11.1201 3.89179 10.7201 3.12152 9.96012C1.54044 8.40012 1.54044 5.92012 3.12152 4.36012C3.89179 3.60012 4.94585 3.20012 5.95936 3.20012C6.97287 3.20012 8.02693 3.60012 8.7972 4.36012C10.3783 5.92012 10.3783 8.40012 8.7972 9.96012C8.02693 10.7201 7.01341 11.1201 5.95936 11.1201Z" fill="#222222"></path>
+                    </svg>	
+                </button>
+        </div>
+      </div>
+      {% if filter_block.settings.filter_option == 'faceted' %}
+
+        {% assign active_filters = false %}
+        {% for filter in collection.filters %}
+          {% if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value %}
+            {% assign active_filters = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+
+        {% if active_filters == true %}
+          <div class="productgrid--filters">
+            {%-
+              render 'product-grid-filters-active',
+              context: collection,
+            %}
+          </div>
+        {% endif %}
+      {% else %}
+        {% if current_tags.size > 0 %}
+          <div class="productgrid--filters">
+            {%- render 'product-grid-tags-active' %}
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if collection.products.size > 0 %}
+        <div
+          class="
+            productgrid--items
+            products-per-row-{{- products_per_row -}}
+          "
+          data-html="productgrid-items"
+          data-productgrid-items
+        >
+          {%- comment %}<locksmith:ba63>{% endcomment -%}
+            {%- assign locksmith_bfe4_forloop__size = 0 %}{% for product in collection.products %}{% capture var %}{% render 'locksmith-variables', scope: 'subject', subject: product, subject_parent: collection, variable: 'transparent' %}{% endcapture %}{% if var == 'true' %}{% assign locksmith_bfe4_forloop__size = locksmith_bfe4_forloop__size | plus: 1 %}{% endif %}{% endfor %}{% assign locksmith_bfe4_forloop__index = nil -%}
+          {%- comment %}</locksmith:ba63>{% endcomment -%}
+          {% for product in collection.products %}
+            {%- comment %}<locksmith:193f>{% endcomment -%}
+              {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: product, subject_parent: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% if locksmith_bfe4_forloop__index == nil %}{% assign locksmith_bfe4_forloop__index = 1 %}{% assign locksmith_bfe4_forloop__index0 = 0 %}{% else %}{% assign locksmith_bfe4_forloop__index = locksmith_bfe4_forloop__index | plus: 1 %}{% assign locksmith_bfe4_forloop__index0 = locksmith_bfe4_forloop__index0 | plus: 1 %}{% endif %}{% if locksmith_bfe4_forloop__index == 1 %}{% assign locksmith_bfe4_forloop__first = true %}{% else %}{% assign locksmith_bfe4_forloop__first = false %}{% endif %}{% if locksmith_bfe4_forloop__index == locksmith_bfe4_forloop__size %}{% assign locksmith_bfe4_forloop__last = true %}{% else %}{% assign locksmith_bfe4_forloop__last = false %}{% endif %}{% assign locksmith_bfe4_forloop__rindex = locksmith_bfe4_forloop__size | minus: locksmith_bfe4_forloop__index | minus: 1 %}{% assign locksmith_bfe4_forloop__rindex0 = locksmith_bfe4_forloop__size | minus: locksmith_bfe4_forloop__index0 | minus: 1 %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:193f>{% endcomment -%}
+            {% assign restricted_tag = 'MX13' %}
+            {% assign product_has_restricted_tag = false %}
+            {% for tag in product.tags %}
+              {% if tag == 'GMSMX13' %}
+                {% assign product_has_restricted_tag = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            {% if product_has_restricted_tag == false or customer != blank and customer.tags contains restricted_tag %}
+            {%
+              render 'product-grid-item',
+              product: product,
+              context: 'collection',
+              index: locksmith_bfe4_forloop__index,
+              products_per_row: products_per_row,
+            %}
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% if product_has_restricted_tag == true or customer == blank and collection.handle contains 'gms-mx13-restricted' %}
+           <div class="product-restricted-message" bis_skin_checked="1">
+   <p style="font-size:1rem;">
+    This content is protected. Please <a style="vertical-align:top;" href="https://www.clksupplies.com/account/login" style="text-decoration:none;">login </a> with your customer account to continue.</p>
+  </div>
+          {%  endif %}
+      {% else %}
+        <div class="productgrid--no-results">
+          <h2 class="productgrid--no-results-title">
+            {%- if collection.all_products_count == 0 -%}
+              {{ 'product_grid.no_results.empty' | t }}
+            {%- else -%}
+              {{ 'product_grid.no_results.tags_empty' | t }}
+            {%- endif -%}
+          </h2>
+
+          <a class="productgrid--no-results-button" href="{{ routes.all_products_collection_url }}">
+            {{ 'search.general.view_all_products' | t }}
+          </a>
+        </div>
+      {% endif %}
+      {%
+        render 'pagination', paginate: paginate,
+        grid_list: true
+      %}
+      {{ collection.metafields.custom.additional_content | metafield_tag }}
+    </div>
+  </div>
+{% endpaginate %}
+
+{%- if section.settings.sort_by -%}
+  {%-
+    render 'product-grid-sortby',
+    type: 'modal',
+  -%}
+{%- endif -%}
+
+{% render 'quick-shop' %}
+{%  render 'ajax-filter-ft' %}
+<div class="metafield-multiline">
+  {{ collection.metafields.custom.schema | escape }}
+</div>
+{% schema %}
+{
+  "name": "t:sections.collection_pages.name",
+  "class": "collection--section section--canonical",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "t:sections.collection_pages.show_collection_image.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page_range",
+      "label": "t:sections.collection_pages.products_per_page_range.label",
+      "min": 24,
+      "max": 48,
+      "step": 12,
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "products_per_row",
+      "label": "t:sections.collection_pages.products_per_row.label",
+      "options": [
+        {
+          "label": "t:sections.collection_pages.products_per_row.option_1",
+          "value": "3"
+        },
+        {
+          "label": "t:sections.collection_pages.products_per_row.option_2",
+          "value": "4"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collection_pages.header_1.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_by",
+      "label": "t:sections.collection_pages.sort_by.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "grid_list",
+      "label": "t:sections.collection_pages.grid_list.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "default_view",
+      "label": "t:sections.collection_pages.default_view.label",
+      "options": [
+        {
+          "label": "t:sections.collection_pages.default_view.option_1",
+          "value": "grid-view"
+        },
+        {
+          "label": "t:sections.collection_pages.default_view.option_2",
+          "value": "list-view"
+        }
+      ],
+      "default": "grid-view"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collection_pages.header_2.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_subcollection",
+      "label": "t:sections.collection_pages.enable_subcollection.label",
+      "default": false,
+      "info": "t:sections.collection_pages.enable_subcollection.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "t:sections.collection_pages.show_product_count.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "thumbnail_image",
+      "label": "t:sections.collection_pages.thumbnail_image.label",
+      "options": [
+        {
+          "value": "product-image",
+          "label": "t:sections.collection_pages.thumbnail_image.option_1"
+        },
+        {
+          "value": "collection-image",
+          "label": "t:sections.collection_pages.thumbnail_image.option_2"
+        }
+      ],
+      "default": "product-image"
+    },
+    {
+      "type": "select",
+      "id": "image_crop",
+      "label": "t:sections.collection_pages.image_crop.label",
+      "options": [
+        {
+          "label": "t:sections.collection_pages.image_crop.option_1",
+          "value": "original"
+        },
+        {
+          "label": "t:sections.collection_pages.image_crop.option_2",
+          "value": "square"
+        },
+        {
+          "label": "t:sections.collection_pages.image_crop.option_3",
+          "value": "circle"
+        },
+        {
+          "label": "t:sections.collection_pages.image_crop.option_4",
+          "value": "round"
+        }
+      ],
+      "default": "original"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "t:sections.collection_pages.blocks.menu.name",
+      "settings": [
+        {
+          "id": "menu",
+          "type": "link_list",
+          "label": "t:sections.collection_pages.blocks.menu.menu.label",
+          "info": "t:sections.collection_pages.blocks.menu.menu.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_prod_count",
+          "label": "t:sections.collection_pages.blocks.menu.show_prod_count.label",
+          "info": "t:sections.collection_pages.blocks.menu.show_prod_count.info",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "menu_depth_range",
+          "label": "t:sections.collection_pages.blocks.menu.menu_depth_range.label",
+          "info": "t:sections.collection_pages.blocks.menu.menu_depth_range.info",
+          "min": 1,
+          "max": 3,
+          "step": 1,
+          "default": 1
+        }
+      ],
+      "limit": 10
+    },
+    {
+      "type": "filter",
+      "name": "t:sections.collection_pages.blocks.filters.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "filter_option",
+          "label": "t:sections.collection_pages.blocks.filters.filter_option.label",
+          "options": [
+            {
+              "value": "faceted",
+              "label": "t:sections.collection_pages.blocks.filters.filter_option.option_1"
+            },
+            {
+              "value": "tag",
+              "label": "t:sections.collection_pages.blocks.filters.filter_option.option_2"
+            }
+          ],
+          "default": "faceted"
+        },
+        {
+          "type": "select",
+          "id": "filter_groups",
+          "label": "t:sections.collection_pages.blocks.filters.filter_groups.label",
+          "options": [
+            {
+              "value": "expand_all",
+              "label": "t:sections.collection_pages.blocks.filters.filter_groups.option_1"
+            },
+            {
+              "value": "expand_first",
+              "label": "t:sections.collection_pages.blocks.filters.filter_groups.option_2"
+            },
+            {
+              "value": "collapse_all",
+              "label": "t:sections.collection_pages.blocks.filters.filter_groups.option_3"
+            }
+          ],
+          "default": "expand_first"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_filter_product_count",
+          "label": "t:sections.collection_pages.blocks.filters.show_filter_product_count.label",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "t:sections.collection_pages.blocks.filters.header_1.content",
+          "info": "t:sections.collection_pages.blocks.filters.header_1.info"
+        },
+        {
+          "type": "select",
+          "id": "filter_style",
+          "label": "t:sections.collection_pages.blocks.filters.filter_style.label",
+          "options": [
+            {
+              "value": "tags",
+              "label": "t:sections.collection_pages.blocks.filters.filter_style.option_1"
+            },
+            {
+              "value": "groups",
+              "label": "t:sections.collection_pages.blocks.filters.filter_style.option_2"
+            }
+          ],
+          "default": "tags"
+        },
+        {
+          "id": "filter_limit",
+          "type": "select",
+          "label": "t:sections.collection_pages.blocks.filters.filter_limit.label",
+          "options": [
+            {
+              "value": "5",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_1"
+            },
+            {
+              "value": "6",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_2"
+            },
+            {
+              "value": "8",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_3"
+            },
+            {
+              "value": "10",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_4"
+            },
+            {
+              "value": "15",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_5"
+            },
+            {
+              "value": "20",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_6"
+            },
+            {
+              "value": "999",
+              "label": "t:sections.collection_pages.blocks.filters.filter_limit.option_7"
+            }
+          ],
+          "default": "999"
+        },
+        {
+          "type": "text",
+          "id": "grid_categories",
+          "label": "t:sections.collection_pages.blocks.filters.grid_categories.label",
+          "info": "t:sections.collection_pages.blocks.filters.grid_categories.info"
+        },
+        {
+          "type": "liquid",
+          "id": "custom_ordered_categories",
+          "label": "t:sections.collection_pages.blocks.filters.custom_ordered_categories.label",
+          "info": "t:sections.collection_pages.blocks.filters.custom_ordered_categories.info"
+        },
+        {
+          "type": "liquid",
+          "id": "custom_ordered_tags",
+          "label": "t:sections.collection_pages.blocks.filters.custom_ordered_tags.label",
+          "info": "t:sections.collection_pages.blocks.filters.custom_ordered_tags.info"
+        },
+        {
+          "type": "liquid",
+          "id": "excluded_tags",
+          "label": "t:sections.collection_pages.blocks.filters.excluded_tags.label",
+          "info": "t:sections.collection_pages.blocks.filters.excluded_tags.info"
+        },
+        {
+          "type": "liquid",
+          "id": "excluded_groups",
+          "label": "t:sections.collection_pages.blocks.filters.excluded_groups.label",
+          "info": "t:sections.collection_pages.blocks.filters.excluded_groups.info"
+        }
+      ],
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

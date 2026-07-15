@@ -1,0 +1,163 @@
+<section class="page-content">
+  <h3 class="make-title">{{ page.title }}</h3>
+  {% if page.content != blank %}
+    <p>{{ page.content }}</p>
+  {% endif %}
+
+  <div class="col-make">
+    <div class="col-make-section">
+      <div class="section-letters">
+        {% assign current = '' %}
+        {% for collection in collections %}
+          {%- comment %}<locksmith:0abc>{% endcomment -%}
+            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+          {%- comment %}</locksmith:0abc>{% endcomment -%}
+          {% if collection.metafields.accentuate.collection_type == 'shop_by_make' %}
+            {% assign first_letter = collection.title | strip_html | upcase | truncate: 1, '' %}
+            {% if first_letter >= 'A' and first_letter <= 'F' %}
+              {% if first_letter != current %}
+                {% if current != '' %}
+                  </div>
+                  <!-- Close previous column -->
+                {% endif %}
+                <div class="manufacture-block">
+                  <!-- Start new column -->
+                  <div class="collection-letter">{{ first_letter }}</div>
+              {% endif %}
+              <div class="collection_link">
+                <a href="{{ collection.url }}" title="{{ collection.title }}">{{ collection.title }}</a>
+              </div>
+              {% assign current = first_letter %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if current != '' %}
+          </div>
+          <!-- Close last column -->
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-make-section">
+      <div class="section-letters">
+        {% assign current = '' %}
+        {% for collection in collections %}
+          {%- comment %}<locksmith:b97f>{% endcomment -%}
+            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+          {%- comment %}</locksmith:b97f>{% endcomment -%}
+          {% if collection.metafields.accentuate.collection_type == 'shop_by_make' %}
+            {% assign first_letter = collection.title | strip_html | upcase | truncate: 1, '' %}
+            {% if first_letter >= 'G' and first_letter <= 'N' %}
+              {% if first_letter != current %}
+                {% if current != '' %}
+                  </div>
+                  <!-- Close previous column -->
+                {% endif %}
+                <div class="manufacture-block">
+                  <!-- Start new column -->
+                  <div class="collection-letter">{{ first_letter }}</div>
+              {% endif %}
+              <div class="collection_link">
+                <a href="{{ collection.url }}" title="{{ collection.title }}">{{ collection.title }}</a>
+              </div>
+              {% assign current = first_letter %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if current != '' %}
+          </div>
+          <!-- Close last column -->
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-make-section">
+      <div class="section-letters">
+        {% assign current = '' %}
+        {% for collection in collections %}
+          {%- comment %}<locksmith:6365>{% endcomment -%}
+            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+          {%- comment %}</locksmith:6365>{% endcomment -%}
+          {% if collection.metafields.accentuate.collection_type == 'shop_by_make' %}
+            {% assign first_letter = collection.title | strip_html | upcase | truncate: 1, '' %}
+            {% if first_letter >= 'O' and first_letter <= 'Z' %}
+              {% if first_letter != current %}
+                {% if current != '' %}
+                  </div>
+                  <!-- Close previous column -->
+                {% endif %}
+                <div class="manufacture-block">
+                  <!-- Start new column -->
+                  <div class="collection-letter">{{ first_letter }}</div>
+              {% endif %}
+              <div class="collection_link">
+                <a href="{{ collection.url }}" title="{{ collection.title }}">{{ collection.title }}</a>
+              </div>
+              {% assign current = first_letter %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if current != '' %}
+          </div>
+          <!-- Close last column -->
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+      .col-make{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 30px 0;
+        justify-content: space-evenly;
+        gap: 60px;
+      }
+
+      .col-make .manufacture-block{
+        flex: 0 0 28%;
+        text-align: left;
+      }
+
+      .col-make .collection_link {
+        font-size: 24px;
+        line-height: 1.3;
+    }
+
+    section.page-content p {
+      font-size: 16px;
+      line-height: 1.5;
+  }
+
+  .collection_link a{
+    font-size: 18px;
+    text-decoration: none;
+    color: black;
+  }
+  .collection_link a:hover{
+    text-decoration: underline;
+    color: #cc1313;
+  }
+  .collection-letter{
+    font-size: 26px;
+    font-weight: 700;
+    color: #cc1313;
+}
+
+  @media (max-width: 767px){
+
+      .col-make{
+        gap: 8px;
+        justify-content: flex-start;
+      }
+
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Shop By Make",
+  "settings": []
+}
+{% endschema %}

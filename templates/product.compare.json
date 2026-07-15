@@ -1,0 +1,174 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-product-compare",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Product information"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "dynamic-comparison": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Product type"
+          }
+        },
+        "dynamic-comparison-2": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "SKU"
+          }
+        },
+        "vendor": {
+          "type": "vendor",
+          "disabled": true,
+          "settings": {}
+        },
+        "inventory-status": {
+          "type": "availability",
+          "settings": {
+            "inventory_display": "hidden",
+            "inventory_transfer_notice": true
+          }
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "heading-2": {
+          "type": "heading",
+          "settings": {
+            "text": "Specifications"
+          }
+        },
+        "dynamic-comparison-3": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Features"
+          }
+        },
+        "a9eee9a4-a2e1-4743-8f43-6e642c53aab8": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Length"
+          }
+        },
+        "363017d8-0295-4e75-9dda-c5534bdd4de4": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Height"
+          }
+        },
+        "a2c5b58c-09fd-4249-b03a-aaef00fb1257": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Width"
+          }
+        },
+        "df8837c5-64bc-4cc7-87e2-4916bc046a98": {
+          "type": "dynamic_comparison",
+          "settings": {
+            "title": "Weight"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "description",
+        "dynamic-comparison",
+        "dynamic-comparison-2",
+        "vendor",
+        "inventory-status",
+        "rating",
+        "heading-2",
+        "dynamic-comparison-3",
+        "a9eee9a4-a2e1-4743-8f43-6e642c53aab8",
+        "363017d8-0295-4e75-9dda-c5534bdd4de4",
+        "a2c5b58c-09fd-4249-b03a-aaef00fb1257",
+        "df8837c5-64bc-4cc7-87e2-4916bc046a98"
+      ],
+      "settings": {
+        "filter_groups": "expand_first"
+      }
+    },
+    "dynamic-highlights-banner": {
+      "type": "dynamic-highlights-banner",
+      "blocks": {
+        "highlight": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-delivery",
+            "title": "Free Shipping",
+            "text": "<p>When you spend $100+<\/p>",
+            "link": ""
+          }
+        },
+        "highlight-2": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-cell-phone",
+            "title": "Give Us A Call",
+            "text": "<p>+1 (201) 555-5555<\/p>",
+            "link": ""
+          }
+        },
+        "highlight-3": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-chat-alternate",
+            "title": "Chat With Us",
+            "text": "<p>We offer 24-hour chat support<\/p>",
+            "link": ""
+          }
+        },
+        "highlight-4": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-pin",
+            "title": "Locations",
+            "text": "<p>Find a store near you<\/p>",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "highlight",
+        "highlight-2",
+        "highlight-3",
+        "highlight-4"
+      ],
+      "disabled": true,
+      "settings": {
+        "section_spacing": true,
+        "section_width": "full-width",
+        "icon_layout": "center",
+        "color": "#4d4d4d",
+        "icon_color": "#046e82",
+        "background_color": "rgba(0,0,0,0)",
+        "mobile_layout": "slider"
+      }
+    },
+    "1503b63a-94db-483c-b847-488c4004e1cb": {
+      "type": "dynamic-featured-collection",
+      "settings": {
+        "title": "Continue Shopping",
+        "layout": "slideshow",
+        "collection": "popular-tools",
+        "product_count": 8,
+        "cta_label": "Shop collection",
+        "cta_button_style": "primary"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "dynamic-highlights-banner",
+    "1503b63a-94db-483c-b847-488c4004e1cb"
+  ]
+}

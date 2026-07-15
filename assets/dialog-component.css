@@ -1,0 +1,146 @@
+.dialog-button {
+    width: 100%;
+    font-size: 15px;
+    background: #fff;
+    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+
+    .svg-wrap {
+        display: flex;
+    }
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.dialog-button.active svg {
+    transform: rotate(180deg);
+    transition: all 0.6s ease;
+}
+
+@media (min-width: 1024px) {
+    #dopener-1.dialog-button {
+        display: none;
+    }
+
+    .dialog-button {
+        background: transparent;
+        color: #fff;
+        width: auto;
+        margin: 10px 0;
+
+        svg {
+            fill: #fff;
+        }
+    }
+}
+
+.vehicle-dialog-wrapper,
+.machine-dialog-wrapper {
+    display: none;
+    padding: 30px 20px;
+    background: #fff;
+    box-shadow: 0 3px 4px rgb(127 127 127 / 25%);
+
+    .dialog-content {
+        max-width: 1360px;
+        margin: auto;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #e5e4e4;
+        border-radius: 2px;
+    }
+
+    .dialog-close-btn {
+        width: 30px;
+        background: #e32619;
+        border: none;
+        height: 30px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        svg {
+            fill: #fff;
+        }
+    }
+
+    .close-btn-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+
+    vehicle-selector,
+    machine-selector {
+        display: flex;
+        flex-direction: column;
+        max-width: 85%;
+        gap: 15px;
+
+        > select {
+            padding: 5px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            width: 100%;
+            font-size: 16px;
+        }
+    }
+
+    #searchBtn {
+        background: #e32619;
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 4px;
+        max-width: 110px;
+        margin: auto;
+        height: 35px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    @media (min-width: 768px) {
+        vehicle-selector,
+        machine-selector {
+            flex-direction: row;
+            gap: 40px;
+        }
+    }
+}
+
+.vehicle-dialog-wrapper.active {
+    display: block;
+}
+
+.machine-dialog-wrapper.active {
+    display: block;
+}

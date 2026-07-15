@@ -1,0 +1,104 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "disabled": true,
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "form": {
+          "type": "form",
+          "settings": {
+            "enable_local_pickup": false
+          }
+        },
+        "key_details": {
+          "type": "key_details",
+          "settings": {
+            "icon": "icon-transfer",
+            "title": "Back in stock: 2-4 weeks",
+            "text": "<p>Our team will contact you when the item is back in stock and ready to be shipped.<\/p>",
+            "text_color": "#1d1d1d",
+            "icon_color": "#1d1d1d",
+            "background_color": "#e9ad14"
+          }
+        },
+        "448c2e30-c7af-484e-b421-b0a46af618aa": {
+          "type": "request_quote",
+          "settings": {
+            "title": "Request a quote",
+            "show_quantity": true,
+            "show_message": true
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "vendor",
+        "rating",
+        "price",
+        "description",
+        "form",
+        "key_details",
+        "448c2e30-c7af-484e-b421-b0a46af618aa"
+      ],
+      "settings": {
+        "gallery_aspect_ratio": "natural",
+        "gallery_image_crop": false,
+        "gallery_thumbnail_position": "below",
+        "gallery_video_autoplay": true,
+        "gallery_video_looping": true,
+        "gallery_hover_zoom": "disabled",
+        "gallery_click_to_zoom": "always"
+      }
+    },
+    "recommendations": {
+      "type": "static-product-recommendations",
+      "disabled": true,
+      "settings": {
+        "show_product_recommendations": true,
+        "product_recommendations_heading": "You may also like"
+      }
+    },
+    "1199ec96-36a1-423b-ae47-dc4741aacddc": {
+      "type": "dynamic-featured-collection",
+      "settings": {
+        "title": "More from this collection",
+        "layout": "grid",
+        "product_count": 5,
+        "cta_label": "Shop Collection",
+        "cta_button_style": "secondary"
+      }
+    },
+    "recently-viewed": {
+      "type": "static-recently-viewed",
+      "settings": {
+        "enable_recently_viewed_products": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "1199ec96-36a1-423b-ae47-dc4741aacddc",
+    "recently-viewed"
+  ]
+}

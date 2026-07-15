@@ -1,0 +1,112 @@
+<style>  
+
+.free-services-links {
+    background-color: #D62B1F;
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 30px;
+    gap: 15px;
+}
+
+.free-services-links li.heading-links-services a {
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.free-services-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.free-services-links hr {
+    rotate: 37deg;
+    height: 25px;
+    background-color: white;
+    border: 1px solid white;
+}
+
+@media screen and (min-width:1300px){
+    .site-header-main {
+    padding: 0 30px !important;
+    max-width: 100%;
+}
+}
+
+@media screen and (max-width:1200px){
+
+    .free-services-links{
+            padding: 15px;
+    }
+    .free-services-links li a {
+    font-size: 13px;
+    }
+
+    .free-services-links li.heading-links-services a {
+    font-size: 20px;
+    }
+
+    .free-services-links li{
+    text-align: center;
+}
+
+.free-services-links li.heading-links-services{
+    text-align: left;
+}
+}
+@media screen and (max-width: 992px) {
+     .free-services-links{
+            padding: 8px;
+            gap: 8px;
+                    margin: 0;
+    }
+    .free-services-links li a {
+    font-size: 11px;
+    }
+
+    .free-services-links li.heading-links-services a {
+    font-size: 12px;
+    }
+
+    .free-services-links li{
+    text-align: center;
+}
+
+.free-services-links li.heading-links-services{
+    text-align: left;
+}
+
+.free-services-links hr {
+    height: 11px;
+}
+}
+
+</style>
+
+<div class="end-image-link">
+  <ul class="free-services-links">
+    <li class="heading-links-services"><a href="#">Win Free Locksmith Gear Every Week</a></li>
+    
+    <li><a href="https://www.clksupplies.com/pages/lockboss-giveaway">JOIN THE #LOCKBOSS GIVEAWAY!</a></li>
+    <hr>
+    <li><a href="https://www.clksupplies.com/pages/lockboss-giveaway">WHO IS A #LOCKBOSS?</a></li>
+    <hr>
+    <li><a href="https://www.clksupplies.com/pages/lockboss-giveaway">JOIN THE COMMUNITY</a></li>
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Free Services",
+  "presets": [
+    {
+      "name": "Free Services"
+    }
+  ]
+}
+{% endschema %}

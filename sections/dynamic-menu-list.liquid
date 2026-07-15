@@ -1,0 +1,216 @@
+<script
+  type="application/json"
+  data-section-id="{{ section.id }}"
+  data-section-type="dynamic-menu-list"
+  data-section-data>
+  {
+    "context": {
+      "see_more": {{ 'general.general.see_more' | t | json }},
+      "see_less": {{ 'general.general.see_less' | t | json }}
+    }
+  }
+</script>
+
+<script type="application/pxs-animation-mapping+json">
+  {
+    "blocks": [".menulist-item"],
+    "elements": [
+      ".menulist-item__image"
+    ]
+  }
+</script>
+
+<section class="menulist-container">
+  {% if section.settings.title != blank %}
+    <h2 class="home-section--title">
+      {{ section.settings.title | escape }}
+    </h2>
+  {% endif %}
+
+  {% if section.blocks.size > 0 %}
+    <div class="home-section--content menulist-inner menulist--blocks-count-{{ section.blocks.size }}" >
+      {% for block in section.blocks %}
+        {% assign menu = block.settings.menu %}
+        {% assign onboard = false %}
+        {% assign image = false %}
+
+        {% if menu == '' or linklists[menu].links.size == 0 %}
+          {% assign onboard = true %}
+          {% assign menu_title = 'onboarding.menu_list.title' | t %}
+        {% else %}
+          {% assign menu_title = linklists[menu].title %}
+        {% endif %}
+
+        {% if block.settings.image %}
+          {% assign image = block.settings.image %}
+        {% elsif menu %}
+          {% for link in linklists[menu].links %}
+            {%- comment %}<locksmith:752a>{% endcomment -%}
+              {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: link, subject_parent: linklists[menu], variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:752a>{% endcomment -%}
+            {% if link.object.image %}
+              {% assign image = link.object.image %}
+              {% break %}
+            {% elsif link.object.featured_image %}
+              {% assign image = link.object.featured_image %}
+            {% elsif collections[link.object.handle].products.first.featured_media.preview_image %}
+              {% assign image = collections[link.object.handle].products.first.featured_media.preview_image %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        <article class="menulist-item menulist-item-{{ forloop.index }}" {{ block.shopify_attributes }}>
+          <div class="menulist-item-inner">
+            <div class="menulist-item__image">
+              {% if image %}
+                {%
+                  render 'rimg',
+                  img: image,
+                  size: '180x180',
+                  lazy: true,
+                  canvas: true,
+                  focal_point: image.presentation.focal_point,
+                %}
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder--image' }}
+              {% endif %}
+            </div>
+
+            <div class="menulist-item__content">
+              <h2 class="menulist-item__title" data-accordion-trigger>
+                {% if onboard %}
+                  {{ 'onboarding.menu_list.title' | t }}
+                {% else %}
+                  {{ linklists[menu].title }}
+                {% endif %}
+
+                <span class="menulist-item__title-icon accordion--icon">
+                  {% render 'icon-chevron-down' %}
+                </span>
+              </h2>
+              {% assign show_max_items = 6 %}
+              <ul class="menulist-menu menulist-menu--initial" data-accordion-content>
+                {%- comment %}<locksmith:30dd>{% endcomment -%}
+                  {%- assign locksmith_b955_forloop__size = 0 %}{% for link in linklists[menu].links %}{% capture var %}{% render 'locksmith-variables', scope: 'subject', subject: link, subject_parent: linklists[menu], variable: 'transparent' %}{% endcapture %}{% if var == 'true' %}{% assign locksmith_b955_forloop__size = locksmith_b955_forloop__size | plus: 1 %}{% endif %}{% endfor %}{% assign locksmith_b955_forloop__index = nil -%}
+                {%- comment %}</locksmith:30dd>{% endcomment -%}
+                {% for link in linklists[menu].links %}
+                  {%- comment %}<locksmith:9f47>{% endcomment -%}
+                    {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: link, subject_parent: linklists[menu], variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% if locksmith_b955_forloop__index == nil %}{% assign locksmith_b955_forloop__index = 1 %}{% assign locksmith_b955_forloop__index0 = 0 %}{% else %}{% assign locksmith_b955_forloop__index = locksmith_b955_forloop__index | plus: 1 %}{% assign locksmith_b955_forloop__index0 = locksmith_b955_forloop__index0 | plus: 1 %}{% endif %}{% if locksmith_b955_forloop__index == 1 %}{% assign locksmith_b955_forloop__first = true %}{% else %}{% assign locksmith_b955_forloop__first = false %}{% endif %}{% if locksmith_b955_forloop__index == locksmith_b955_forloop__size %}{% assign locksmith_b955_forloop__last = true %}{% else %}{% assign locksmith_b955_forloop__last = false %}{% endif %}{% assign locksmith_b955_forloop__rindex = locksmith_b955_forloop__size | minus: locksmith_b955_forloop__index | minus: 1 %}{% assign locksmith_b955_forloop__rindex0 = locksmith_b955_forloop__size | minus: locksmith_b955_forloop__index0 | minus: 1 %}{% else %}{% continue %}{% endif -%}
+                  {%- comment %}</locksmith:9f47>{% endcomment -%}
+                  {% if locksmith_b955_forloop__index > show_max_items %}
+                    <li class="menulist-menu__item menulist-menu__item--last">
+                      <ul class="menulist-menu menulist-menu--show-more" data-accordion-content>
+                        {%- comment %}<locksmith:b1ed>{% endcomment -%}
+                          {%- assign locksmith_5913_forloop__size = 0 %}{% for hidden_link in linklists[menu].links %}{% capture var %}{% render 'locksmith-variables', scope: 'subject', subject: hidden_link, subject_parent: linklists[menu], variable: 'transparent' %}{% endcapture %}{% if var == 'true' %}{% assign locksmith_5913_forloop__size = locksmith_5913_forloop__size | plus: 1 %}{% endif %}{% endfor %}{% assign locksmith_5913_forloop__index = nil -%}
+                        {%- comment %}</locksmith:b1ed>{% endcomment -%}
+                        {% for hidden_link in linklists[menu].links %}
+                          {%- comment %}<locksmith:d3f7>{% endcomment -%}
+                            {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: hidden_link, subject_parent: linklists[menu], variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% if locksmith_5913_forloop__index == nil %}{% assign locksmith_5913_forloop__index = 1 %}{% assign locksmith_5913_forloop__index0 = 0 %}{% else %}{% assign locksmith_5913_forloop__index = locksmith_5913_forloop__index | plus: 1 %}{% assign locksmith_5913_forloop__index0 = locksmith_5913_forloop__index0 | plus: 1 %}{% endif %}{% if locksmith_5913_forloop__index == 1 %}{% assign locksmith_5913_forloop__first = true %}{% else %}{% assign locksmith_5913_forloop__first = false %}{% endif %}{% if locksmith_5913_forloop__index == locksmith_5913_forloop__size %}{% assign locksmith_5913_forloop__last = true %}{% else %}{% assign locksmith_5913_forloop__last = false %}{% endif %}{% assign locksmith_5913_forloop__rindex = locksmith_5913_forloop__size | minus: locksmith_5913_forloop__index | minus: 1 %}{% assign locksmith_5913_forloop__rindex0 = locksmith_5913_forloop__size | minus: locksmith_5913_forloop__index0 | minus: 1 %}{% else %}{% continue %}{% endif -%}
+                          {%- comment %}</locksmith:d3f7>{% endcomment -%}
+                          {% if locksmith_5913_forloop__index <= show_max_items %}
+                            {% continue %}
+                          {% endif %}
+                          <li
+                            class="menulist-menu__item"
+                          >
+                            <a class="menulist-menu__link" href="{{ hidden_link.url }}">
+                              {{ hidden_link.title }}
+                            </a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                      <a class="menulist-menu__show-more-trigger menulist-menu__link" href="#" data-menulist-toggle>
+                        {{ 'general.general.see_more' | t }}
+                      </a>
+                    </li>
+                    {% break %}
+                  {% endif %}
+                  <li
+                    class="menulist-menu__item {% if locksmith_b955_forloop__last %}menulist-menu__item--last{% endif %}"
+                  >
+                    <a class="menulist-menu__link" href="{{ link.url }}">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {% else %}
+                  {% for i in (1..6) %}
+                    <li class="menulist-menu__item {% if forloop.last %}menulist-menu__item--last{% endif %}">
+                      <a class="menulist-menu__link" href="#">
+                        {{ 'onboarding.menu_list.link_text' | t }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.menu_list.name",
+  "class": "menulist--section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.menu_list.title.label",
+      "default": "Menu list"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "t:sections.menu_list.blocks.menu.name",
+      "settings": [
+        {
+          "id": "menu",
+          "type": "link_list",
+          "label": "t:sections.menu_list.blocks.menu.menu.label"
+        },
+        {
+          "id": "image",
+          "type": "image_picker",
+          "label": "t:sections.menu_list.blocks.menu.image.label",
+          "info": "t:sections.menu_list.blocks.menu.image.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.menu_list.presets.menu_list.name",
+      "category": "t:sections.menu_list.presets.menu_list.category",
+      "blocks": [
+        {
+          "type": "menu"
+        },
+        {
+          "type": "menu"
+        },
+        {
+          "type": "menu"
+        },
+        {
+          "type": "menu"
+        },
+        {
+          "type": "menu"
+        },
+        {
+          "type": "menu"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["*"]
+  }
+}
+{% endschema %}

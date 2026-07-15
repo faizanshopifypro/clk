@@ -1,0 +1,49 @@
+<ul class="headersiteac site-header-actions" data-header-actions>
+   <div class="offer-text">
+            <strong>{{announcement_text}}</strong>
+          <a href="{{ announcement_link }}" style="text-decoration:none;"><span>{{announcement_text_mobile}}</span></a>
+          </div>
+  {% if shop.customer_accounts_enabled %}
+    {% unless customer %}
+      <li class="site-header-actions__account-link">
+        <a
+          class="site-header_account-link-anchor"
+          href="{{ routes.account_login_url }}"
+        >
+          <span class="site-header__account-icon">
+            {% 
+                render 'icon-library', 
+                id: 'icon-account', 
+            %}
+          </span>
+          
+          <span class="site-header_account-link-text">
+            {{ 'header.account.login' | t }}
+          </span>
+        </a>
+      </li>
+    {% else %}
+      <li class="site-header-actions__account-link">
+        <span class="site-header__account-icon">
+          {% render 'icon-library', id: 'icon-account' %}
+        </span>
+        <span class="site-header__account-links">
+          <a
+            class="site-header__account-link--account"
+            href="{{ routes.account_url }}"
+          >
+            {{ 'header.account.title' | t }}
+          </a>
+          
+          <a
+            class="site-header__account-link--logout"
+            href="{{ routes.account_logout_url }}"
+            data-no-instant
+          >
+            {{ 'header.account.logout' | t }}
+          </a>
+        </span>
+      </li>
+    {% endunless %}
+  {% endif %}
+</ul>

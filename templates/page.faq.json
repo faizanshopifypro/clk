@@ -1,0 +1,210 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-faq",
+      "settings": {}
+    },
+    "dynamic-faq": {
+      "type": "dynamic-faq",
+      "blocks": {
+        "category_1": {
+          "type": "category",
+          "settings": {
+            "heading": "Orders",
+            "show_category_card": true
+          }
+        },
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "question": "How do I track my order?",
+            "answer": "<p>Tracking the status of your order is easy. Once your order has been processed and shipped, you will receive a confirmation email containing a unique tracking number. You can use this tracking number on our website or the carrier's website to monitor the real-time status and location of your package.<\/p>",
+            "icon": "none"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I modify or cancel after it has been placed?",
+            "answer": "<p>We understand that circumstances may change. If you need to modify or cancel your order, please contact our customer support team as soon as possible. We will do our best to accommodate your request, but please note that orders are processed quickly to ensure prompt delivery.<\/p>",
+            "icon": "none"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "question": "What payment methods do you accept?",
+            "answer": "<p>We offer a variety of convenient payment methods to make your shopping experience seamless. Accepted payment methods include major credit cards.<\/p>",
+            "icon": "none"
+          }
+        },
+        "category_2": {
+          "type": "category",
+          "settings": {
+            "heading": "Shipping",
+            "show_category_card": true
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "question": "What shipping options do you offer?",
+            "answer": "<p>We offer a variety of shipping options to cater to different customer preferences. Standard shipping is the most economical choice with a delivery time of 7 days, while expedited shipping provides a faster delivery option at an additional cost. <\/p>",
+            "icon": "none"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "question": "How much does shipping cost?",
+            "answer": "<p>Yes, we do offer international shipping to many countries. During the checkout process, customers can select their country, and shipping costs and estimated delivery times will be provided accordingly.<\/p>",
+            "icon": "none"
+          }
+        },
+        "question_6": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes, we do offer international shipping to many countries. During the checkout process, customers can select their country, and shipping costs and estimated delivery times will be provided accordingly.<\/p>",
+            "icon": "none"
+          }
+        },
+        "category_3": {
+          "type": "category",
+          "settings": {
+            "heading": "Returns",
+            "show_category_card": true
+          }
+        },
+        "question_7": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Our return policy is designed to ensure customer satisfaction. If you're not completely satisfied with your purchase, you can return the item within 30 days of receiving it for a full refund.<\/p>",
+            "icon": "none"
+          }
+        },
+        "question_8": {
+          "type": "question",
+          "settings": {
+            "question": "How do I initiate a return?",
+            "answer": "<p>Initiating a return is simple. Log in to your account on our website, go to the order history section, and select the item you wish to return. Follow the provided instructions to generate a return authorization, and then ship the item back to us using the prepaid shipping label provided.<\/p>",
+            "icon": "none"
+          }
+        },
+        "question_9": {
+          "type": "question",
+          "settings": {
+            "question": "Are there return shipping fees?",
+            "answer": "<p>In most cases, return shipping fees are the responsibility of the customer. However, if the return is due to an error on our part, such as receiving a damaged or incorrect item, we will cover the return shipping costs. We recommend using our provided prepaid shipping label for hassle-free returns.<\/p>",
+            "icon": "none"
+          }
+        },
+        "b99a02be-ab07-4448-88ea-0021b7bb29e0": {
+          "type": "category",
+          "settings": {
+            "heading": "Warranty",
+            "show_category_card": true
+          }
+        },
+        "cf53c342-e290-4194-8f52-354d63cfae9b": {
+          "type": "question",
+          "settings": {
+            "question": "What is your warranty policy?",
+            "answer": "<p>We stand behind the quality of our products and offer a 1-year warranty on all purchases. This warranty covers manufacturing defects and ensures that our customers receive items free from defects in materials and workmanship.<\/p>",
+            "icon": "none"
+          }
+        },
+        "a666af22-8235-447f-92f0-81535a02c79f": {
+          "type": "question",
+          "settings": {
+            "question": "How do I register my product for warranty coverage?",
+            "answer": "<p>Product registration for warranty coverage is a straightforward process. Upon receiving your order, you will find detailed instructions on how to register your product on our website.<\/p>",
+            "icon": "none"
+          }
+        },
+        "b935500b-9228-49f8-8b7e-88ab4b92ef8b": {
+          "type": "question",
+          "settings": {
+            "question": "What is not covered under the warranty?",
+            "answer": "<p>While our warranty is comprehensive, there are certain situations not covered. The warranty does not extend to damages caused by misuse, accidents, modifications, or unauthorized repairs.<\/p>",
+            "icon": "none"
+          }
+        },
+        "160732aa-00fd-41bc-a1a2-1a2d6edfd126": {
+          "type": "category",
+          "settings": {
+            "heading": "Wholesale",
+            "show_category_card": true
+          }
+        },
+        "3da5ae08-9bc1-4f7e-bfdd-65d75848a457": {
+          "type": "question",
+          "settings": {
+            "question": "Do you offer wholesale pricing for bulk orders?",
+            "answer": "<p>Absolutely! We offer competitive wholesale pricing for customers interested in purchasing our products in larger quantities. Our wholesale pricing is tiered, meaning that the more units you order, the lower the per-unit cost. To inquire about our wholesale pricing and terms, please contact our dedicated wholesale team.<\/p>",
+            "icon": "none"
+          }
+        },
+        "e8d4f113-9348-4a40-8049-f223776ff0a7": {
+          "type": "question",
+          "settings": {
+            "question": "What are the minimum order quantities for wholesale purchases?",
+            "answer": "<p>Our wholesale program has minimum order quantity requirements to ensure you receive the best possible pricing and to streamline the fulfillment process. The minimum order quantities vary depending on the product. For detailed information on minimum order quantities, product availability, and bulk pricing, please get in touch with our wholesale team.<\/p>",
+            "icon": "none"
+          }
+        },
+        "e139675d-7a18-4178-8c53-d743f9dc5057": {
+          "type": "category",
+          "settings": {
+            "heading": "Price matching",
+            "show_category_card": true
+          }
+        },
+        "6a6f8669-2990-42ea-8842-7e933df6f622": {
+          "type": "question",
+          "settings": {
+            "question": "Do you offer price matching?",
+            "answer": "<p>No, we currently do not offer price matching.<\/p>",
+            "icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "category_1",
+        "question_1",
+        "question_2",
+        "question_3",
+        "category_2",
+        "question_4",
+        "question_5",
+        "question_6",
+        "category_3",
+        "question_7",
+        "question_8",
+        "question_9",
+        "b99a02be-ab07-4448-88ea-0021b7bb29e0",
+        "cf53c342-e290-4194-8f52-354d63cfae9b",
+        "a666af22-8235-447f-92f0-81535a02c79f",
+        "b935500b-9228-49f8-8b7e-88ab4b92ef8b",
+        "160732aa-00fd-41bc-a1a2-1a2d6edfd126",
+        "3da5ae08-9bc1-4f7e-bfdd-65d75848a457",
+        "e8d4f113-9348-4a40-8049-f223776ff0a7",
+        "e139675d-7a18-4178-8c53-d743f9dc5057",
+        "6a6f8669-2990-42ea-8842-7e933df6f622"
+      ],
+      "settings": {
+        "section_width": "regular",
+        "heading": "",
+        "enable_category_cards": true,
+        "category_card_image_crop": "original",
+        "category_heading_size": "medium",
+        "icon_color": "rgba(0,0,0,0)"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "dynamic-faq"
+  ]
+}

@@ -1,0 +1,224 @@
+{% comment %}
+  @param context {String}
+    The context, either 'product' or 'cart'
+
+  @param item {Object}
+    The cart item object
+{% endcomment %}
+<style>
+  .qty_info {
+  color: #d32f2f;
+}
+</style>
+{% assign quantity_increment_value = settings.quantity_increment_value %}
+
+{% comment %}
+  Minimum quantity logic based on product tags
+{% endcomment %}
+{% assign min_qty = 1 %}
+{% assign initial_value = quantity_increment_value %}
+
+{% if context == 'product' and product %}
+  {% if product.tags contains '10-Qty' %}
+    {% assign min_qty = 10 %}
+    {% assign initial_value = 10 %}
+  {% elsif product.tags contains '5-Qty' %}
+    {% assign min_qty = 5 %}
+    {% assign initial_value = 5 %}
+  {% endif %}
+{% endif %}
+{% if context == 'cart' %}
+  {% if item.product.tags contains '10-Qty' %}
+    {% assign min_qty = 10 %}
+    {% assign initial_value = 10 %}
+  {% elsif item.product.tags contains '5-Qty' %}
+    {% assign min_qty = 5 %}
+    {% assign initial_value = 5 %}
+  {% endif %}
+{% endif %}
+<quantity-selector
+  class="quantity-selector"
+ data-quantity-selector
+  data-min-quantity="{{ initial_value }}"
+  data-step="{{ initial_value }}"
+  {% if template == 'product' %}
+  style="width:48%;"
+  {% endif %}
+>
+  <label
+    class="quantity-selector__label"
+    for="
+      {%- if context == 'product' -%}
+        quantity-selector__input-{{ section.id }}
+      {%- else -%}
+        updates_{{ item.key }}
+      {%- endif -%}
+    "
+    style="white-space: nowrap;"
+  >
+    {{- 'general.general.quantity' | t -}}{% if product.tags contains '10-Qty' or product.tags contains '5-Qty'%}: <span style="font-size:11px;font-weight:400;">Must Order in Multiples of {{ initial_value }} </span> {% endif %}
+  </label>
+
+  <div class="quantity-selector__wrapper">
+    <div
+      class="
+        quantity-selector__button-wrapper
+        quantity-selector__button-wrapper--minus
+        {% if initial_value <= min_qty %}quantity-selector__button-wrapper--disabled{% endif %}
+      "
+      data-button-wrapper
+      data-button-wrapper-minus
+    >
+      <button
+        class="
+          quantity-selector__button
+          quantity-selector__button--minus
+        "
+        type="button"
+        name="minus"
+        aria-label="{{ 'general.accessibility.decrease_quantity' | t: increment: quantity_increment_value }}"
+        data-quantity-minus
+        {% unless template == 'cart' %}
+        {% if initial_value <= min_qty %}disabled{% endif %}
+          {% endunless %}
+      >
+        {%
+          render 'icon-library',
+          id: 'icon-minus',
+        %}
+      </button>
+    </div>
+
+    <input
+      class="quantity-selector__input"
+      id="
+        {%- if context == 'product' -%}
+          quantity-selector__input-{{ section.id }}
+        {%- else -%}
+          updates_{{ item.key }}
+        {%- endif -%}
+      "
+      aria-label="{{ 'general.general.quantity' | t }}"
+      name="{%- if context == 'product' -%}quantity{%- else -%}updates[]{%- endif -%}"
+      type="number"
+      {%- if context == 'product' -%}
+        min="{{ min_qty }}"
+        value="{{ initial_value }}"
+      {%- else -%}
+        min="1"
+        value="{{ item.quantity }}"
+      {%- endif -%}
+      step="{{ initial_value }}"
+      data-quantity-input
+      data-increment-value="{{ initial_value }}"
+      readonly
+    >
+
+    <div
+      class="
+        quantity-selector__button-wrapper--plus
+        quantity-selector__button-wrapper
+      "
+      data-button-wrapper
+      data-button-wrapper-plus
+    >
+      <button
+        class="
+          quantity-selector__button
+          quantity-selector__button--plus
+        "
+        type="button"
+        name="plus"
+        aria-label="{{ 'general.accessibility.increase_quantity' | t: increment: quantity_increment_value }}"
+        data-quantity-plus
+      >
+        {%
+          render 'icon-library',
+          id: 'icon-plus',
+        %}
+      </button>
+    </div>
+  </div>
+</quantity-selector>
+{% if template contains 'product'%}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const quantitySelectors = document.querySelectorAll('[data-quantity-selector]');
+  
+  quantitySelectors.forEach(selector => {
+    const input = selector.querySelector('[data-quantity-input]');
+    const minusButton = selector.querySelector('[data-quantity-minus]');
+    const plusButton = selector.querySelector('[data-quantity-plus]');
+    const minQuantity = parseInt(selector.getAttribute('data-min-quantity')) || {{ initial_value }};
+    
+    // Remove any existing event listeners to prevent duplication
+    const newPlusButton = plusButton.cloneNode(true);
+    const newMinusButton = minusButton.cloneNode(true);
+    plusButton.parentNode.replaceChild(newPlusButton, plusButton);
+    minusButton.parentNode.replaceChild(newMinusButton, minusButton);
+    
+    // Update button states based on current value
+    function updateButtonStates() {
+      const currentValue = parseInt(input.value);
+      const minusWrapper = newMinusButton.closest('[data-button-wrapper-minus]');
+      
+      // Disable minus button only when at minimum quantity
+      if (currentValue <= minQuantity) {
+        newMinusButton.disabled = true;
+        if (minusWrapper) {
+          minusWrapper.classList.add('quantity-selector__button-wrapper--disabled');
+        }
+      } else {
+        newMinusButton.disabled = false;
+        if (minusWrapper) {
+          minusWrapper.classList.remove('quantity-selector__button-wrapper--disabled');
+        }
+      }
+    }
+    
+    // Plus button functionality - ONLY add 1
+    newPlusButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      let currentValue = parseInt(input.value);
+      currentValue += {{ initial_value }};
+      input.value = currentValue;
+      updateButtonStates();
+      
+      // Prevent any other handlers
+      return false;
+    }, true); // Use capture phase to handle first
+    
+    // Minus button functionality - ONLY subtract 1
+    newMinusButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      let currentValue = parseInt(input.value);
+      if (currentValue > minQuantity) {
+        currentValue -= {{ initial_value }};
+        input.value = currentValue;
+        updateButtonStates();
+      }
+      
+      // Prevent any other handlers
+      return false;
+    }, true); // Use capture phase to handle first
+    
+    // Input change validation
+    input.addEventListener('change', function() {
+      let currentValue = parseInt(input.value);
+      if (currentValue < minQuantity) {
+        input.value = minQuantity;
+        currentValue = minQuantity;
+      }
+      updateButtonStates();
+    });
+    
+    // Initialize button states
+    updateButtonStates();
+  });
+});
+</script>
+{% endif %}

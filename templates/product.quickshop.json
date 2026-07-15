@@ -1,0 +1,86 @@
+{
+  "layout": "quickshop",
+  "sections": {
+    "main": {
+      "type": "quickshop",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "c6db966c-4292-4a98-846d-e9d8d5820654": {
+          "type": "sku",
+          "settings": {}
+        },
+        "vendor": {
+          "type": "vendor",
+          "disabled": true,
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "form": {
+          "type": "form",
+          "settings": {
+            "enable_local_pickup": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "15d3722b-9a93-41d8-b5bc-0540b462cd9a": {
+          "type": "collapsible-tab",
+          "settings": {
+            "collapsible_tab_heading": "Specifications"
+          }
+        },
+        "c2bce9dc-b8fa-4305-b646-59135accc38b": {
+          "type": "collapsible-tab",
+          "disabled": true,
+          "settings": {
+            "collapsible_tab_heading": "Warranty",
+            "collapsible_tab_text": "<p>To receive more information about our warranty policies, get in touch and we are happy to send you our different offerings. <a href=\"https:\/\/empire-theme-depot.myshopify.com\/pages\/contact\" title=\"Contact\">Contact us here<\/a>.<\/p>"
+          }
+        },
+        "388dc34c-0ca7-485c-a82b-3b6ab66fb1be": {
+          "type": "request_quote",
+          "settings": {
+            "title": "Request a quote",
+            "show_quantity": true,
+            "show_message": true
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "c6db966c-4292-4a98-846d-e9d8d5820654",
+        "vendor",
+        "rating",
+        "price",
+        "form",
+        "description",
+        "15d3722b-9a93-41d8-b5bc-0540b462cd9a",
+        "c2bce9dc-b8fa-4305-b646-59135accc38b",
+        "388dc34c-0ca7-485c-a82b-3b6ab66fb1be"
+      ],
+      "settings": {
+        "quickshop_gallery_aspect_ratio": "natural",
+        "quickshop_gallery_image_crop": true,
+        "quickshop_gallery_thumbnail_position": "below",
+        "quickshop_gallery_video_autoplay": true,
+        "quickshop_gallery_video_looping": true,
+        "quickshop_gallery_hover_zoom": "disabled"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

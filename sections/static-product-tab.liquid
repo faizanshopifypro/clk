@@ -1,0 +1,113 @@
+{% liquid
+   assign show_tab = 0
+   assign productCollections = product.collections | map:'handle' 
+   if productCollections contains "search-vehicle" or productCollections contains "search-machine" 
+     assign show_tab = 1
+   endif
+
+  assign selected_variant = product.selected_variant
+
+  if product.variants.size == 1 or select_first_available_variant or product_form == false
+    assign selected_variant = product.selected_or_first_available_variant
+  endif
+ assign sku = selected_variant.sku 
+%}
+<div id="scrl-box"></div>
+ <div class="product--container top-scroll" id="tabs">
+     <ul id="product_tabs" class="prod_tab">
+        <li><a id="description_tab" href="#description_tabC" class="prod_tablinks">Description</a></li>
+        <li><a id="specification_tab" href="#specification_tabC" class="prod_tablinks">Specifications</a></li>
+       {% if show_tab == 1 %} 
+          <li><a id="compatible_tab" href="#compatible_tabC" class="prod_tablinks">Compatible With</a></li>
+        {% endif %} 
+        <li><a id="reviews_tab"href="#reviews_tabC"  class="prod_tablinks">Reviews</a></li>
+     </ul>
+     
+      <div class="tabcontent" id="description_tabC">
+      <div class="desc" id="description">
+        <div class="product-descriptions d-flex flex-column flex-sm-row pt-6 pb-12" data-v-aec13ece>
+          <div class="description-container" >
+            <h2 class="text-h2"> Description</h2>
+            {{ product.description }}
+          </div>
+        </div>
+      </div> 
+
+    {% for collection in product.collections %}
+        {%- comment %}<locksmith:1399>{% endcomment -%}
+          {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: collection, subject_parent: product, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+        {%- comment %}</locksmith:1399>{% endcomment -%}
+        {% if collection.handle == 'car-keys-remotes' or collection.handle =='cylinder-keys' %}
+         <div class="idenikey_app_img">
+            <a href="https://www.clksupplies.com/pages/find-keys-instantly-with-idenikey-download-the-app-today" target="_blank">  
+             
+           <picture>
+              <source media="(min-width: 768px)" srcset="https://cdn.shopify.com/s/files/1/0839/9519/files/ideniKey_A_Content_for_Desktop.png?v=1751222845">
+              
+              <source media="(max-width: 767px)" srcset="https://cdn.shopify.com/s/files/1/0839/9519/files/ideniKey_A_Content_for_Mobile.png?v=1751222962">
+              
+              <img src="https://cdn.shopify.com/s/files/1/0839/9519/files/ideniKey_A_Content_for_Desktop.png?v=1751222845" alt="Responsive image">
+            </picture>
+            </a>
+          </div> 
+       {% endif %}   
+    {% endfor %}
+        
+     
+   </div>
+  
+    <div class="tabcontent" id="specification_tabC">
+        <section id="specifications1" data-gtm-pdp-section="Specifications" tabindex="-1">
+            <div class="product-specifications">
+              <div class="product-specifications__header product-section-header">
+                <h2 class="text-h2">{{ product.title }} Specifications</h2>
+              </div>
+              <ul role="presentation" class="product-identifiers pl-0 pb-2 product-specifications__identifiers my-4 pl-4">
+                  <li class="product-identifiers__zoro-no"><strong>SKU #:</strong> 
+                  <span class='prodtab_sku'>{{ sku }}</span> </li>
+                  <li class="product-identifiers__mfr-no"><strong>Vendor :</strong> <span>{{ product.vendor }}</span></li>
+              </ul>
+             
+              <ul class="product-specifications__list test mb-4 pl-0">
+               {%
+                    render 'product-metafields'
+                %}
+               </ul>
+              
+               <div class="product-specifications__survey pl-4">
+                  <img src="https://cdn.shopify.com/s/files/1/0839/9519/files/feedback-icon.svg"  alt="Feedback" width="20" height="20"> Help us improve our
+                  <a id="product-information-survey" href="javascript:void(0)">product information</a>
+              </div>
+
+          </div>
+        </section>
+    </div>
+  
+  {% if show_tab == 1 %}  
+  <div class="container tabcontent" id="compatible_tabC">
+
+<h2 class="text-h2"> Compatible With</h2>
+    
+    {% assign  filter_metafields=product.metafields.filter.v_m | split:',' %} 
+    {% for p_tag in filter_metafields %}
+      <span class="product_tab_tags">{{ p_tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <div class="container tabcontent" id="reviews_tabC"></div>
+  <div id="kudobuzz_product_reviews_widget" data-id="{{product.id}}">
+     <h2 class="text-h2"> Reviews</h2>
+  </div> 
+
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Product Tabs",
+  "class": "product-tabs--section",
+    "settings": []
+  }
+{% endschema %}

@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "search": {
+      "type": "search-vehicle",
+      "settings": {
+        "heading": "<h1>Search Machine<\/h1>"
+      }
+    }
+  },
+  "order": [
+    "search"
+  ]
+}

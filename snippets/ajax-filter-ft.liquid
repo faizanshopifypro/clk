@@ -1,0 +1,506 @@
+<script>
+// ============================================================
+// Empire Theme - AJAX Filtering & Sorting - FULL FIX
+// Fixes: remove filter, clear all, sort modal, lazy images,
+//        hover actions (add to cart, wishlist, quickshop)
+// ============================================================
+
+(function () {
+
+  const PRODUCT_GRID_SECTION_ID = '{{section.id }}';
+  const PRODUCT_GRID_SELECTOR = '#shopify-section-' + PRODUCT_GRID_SECTION_ID;
+
+  // -------------------------------------------------------
+  // UTILITY: Build Section Rendering API fetch URL
+  // -------------------------------------------------------
+  function buildFetchURL(pageURL) {
+    const url = new URL(pageURL, window.location.origin);
+    url.searchParams.set('section_id', PRODUCT_GRID_SECTION_ID);
+    return url.toString();
+  }
+
+  // -------------------------------------------------------
+  // UTILITY: Show / Hide loading state
+  // -------------------------------------------------------
+  function showLoading() {
+    const grid = document.querySelector(PRODUCT_GRID_SELECTOR);
+    if (grid) {
+      grid.style.opacity = '0.4';
+      grid.style.pointerEvents = 'none';
+      grid.style.transition = 'opacity 0.2s ease';
+    }
+  }
+
+  function hideLoading() {
+    const grid = document.querySelector(PRODUCT_GRID_SELECTOR);
+    if (grid) {
+      grid.style.opacity = '1';
+      grid.style.pointerEvents = 'auto';
+    }
+  }
+
+  // -------------------------------------------------------
+  // BESTSELLER SORT: Sort product items by data-order-count
+  // Runs after every AJAX render when sort_by=best-selling
+  // -------------------------------------------------------
+  function sortByOrderCount() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sortValue = urlParams.get('sort_by');
+
+    // Only run when best-selling is active
+    if (sortValue !== 'best-selling') return;
+
+    // Find the product grid container (the direct parent of product item wrappers)
+    // Empire wraps items in .productgrid--items or similar
+    const gridContainer = document.querySelector(
+      PRODUCT_GRID_SELECTOR + ' .productgrid--items, ' +
+      PRODUCT_GRID_SELECTOR + ' .grid__item-wrapper, ' +
+      PRODUCT_GRID_SELECTOR + ' ul.productgrid--items'
+    );
+
+    if (!gridContainer) {
+      console.warn('BestSeller Sort: grid container not found. Check selector.');
+      return;
+    }
+
+    // Collect all direct product item wrappers
+    // data-order-count must be set in Liquid on each product card wrapper
+    const items = Array.from(
+      gridContainer.querySelectorAll(':scope > [data-product-item]')
+    );
+
+    if (items.length === 0) {
+      console.warn('BestSeller Sort: no [data-product-item] elements found.');
+      return;
+    }
+
+    // Sort descending by order count; missing/invalid values treated as 0
+    items.sort(function (a, b) {
+      const aCount = parseInt(a.getAttribute('data-order-count'), 10) || 0;
+      const bCount = parseInt(b.getAttribute('data-order-count'), 10) || 0;
+      return bCount - aCount; // DESC: highest first
+    });
+
+    // Re-insert in sorted order using a DocumentFragment for one reflow
+    const fragment = document.createDocumentFragment();
+    items.forEach(function (item) {
+      fragment.appendChild(item);
+    });
+    gridContainer.appendChild(fragment);
+
+    console.log('BestSeller Sort: sorted', items.length, 'products by order_count DESC');
+  }
+
+  // -------------------------------------------------------
+  // FIX 1: Re-initialize lazy images after AJAX swap
+  // Empire uses data-rimg="lazy" for deferred image loading
+  // -------------------------------------------------------
+  function reinitLazyImages() {
+    const lazyImgs = document.querySelectorAll(PRODUCT_GRID_SELECTOR + ' img[data-rimg="lazy"]');
+    lazyImgs.forEach(function(img) {
+      img.setAttribute('data-rimg', 'loading');
+      const template = img.getAttribute('data-rimg-template');
+      const maxAttr = img.getAttribute('data-rimg-max') || '512x512';
+      if (template) {
+        const size = maxAttr.split('x')[0] + 'x' + maxAttr.split('x')[1];
+        const src = template.replace('{size}', size);
+        img.src = src;
+        img.srcset = src + ' 1x';
+        img.setAttribute('data-rimg', 'done');
+      }
+    });
+    const lazyImgss = document.querySelectorAll(PRODUCT_GRID_SELECTOR + ' div[data-rimg-canvas]');
+    lazyImgss.forEach(function(imgs) {
+      imgs.style.display = 'none';
+    });
+  }
+
+  // -------------------------------------------------------
+  // FIX 2: Re-initialize Empire product card JS after AJAX
+  // -------------------------------------------------------
+  function reinitProductCards() {
+    if (window.theme) {
+      if (window.theme.ProductItem && typeof window.theme.ProductItem.init === 'function') {
+        window.theme.ProductItem.init();
+      }
+      if (window.theme.QuickShop && typeof window.theme.QuickShop.init === 'function') {
+        window.theme.QuickShop.init();
+      }
+      if (window.theme.QuickBuy && typeof window.theme.QuickBuy.init === 'function') {
+        window.theme.QuickBuy.init();
+      }
+      if (window.theme.WishList && typeof window.theme.WishList.init === 'function') {
+        window.theme.WishList.init();
+      }
+    }
+
+    if (window.WishlistHero && typeof window.WishlistHero.refresh === 'function') {
+      window.WishlistHero.refresh();
+    }
+
+    const quantitySelectors = document.querySelectorAll(PRODUCT_GRID_SELECTOR + ' quantity-selector');
+    quantitySelectors.forEach(function(qs) {
+      const clone = qs.cloneNode(true);
+      qs.parentNode.replaceChild(clone, qs);
+    });
+
+    reinitQuickBuyButtons();
+
+    const productItems = document.querySelectorAll(PRODUCT_GRID_SELECTOR + ' [data-product-item]');
+    productItems.forEach(function(item) {
+      item.addEventListener('mouseenter', function() {
+        const gridWrapper = document.querySelector('.productgrid--outer');
+        if (gridWrapper && gridWrapper.classList.contains('productgrid-listview')) return;
+        this.classList.add('productitem--hovered');
+        this.querySelector('.productitem').setAttribute('data-animation-state', 'open');
+        this.style.height = this.offsetHeight + 60 + 'px';
+      });
+      item.addEventListener('mouseleave', function() {
+        const gridWrapper = document.querySelector('.productgrid--outer');
+        if (gridWrapper && gridWrapper.classList.contains('productgrid-listview')) return;
+        this.classList.remove('productitem--hovered');
+        this.querySelector('.productitem').setAttribute('data-animation-state', 'closed');
+        this.style.height = 'auto';
+      });
+    });
+  }
+
+  // APPLY SAVED VIEW ON LOAD / AFTER AJAX
+  function applySavedView() {
+    const savedView = localStorage.getItem('collectionView');
+    const gridWrapper = document.querySelector('.productgrid--outer');
+    if (!gridWrapper) return;
+    if (savedView === 'list-view') {
+      gridWrapper.classList.add('productgrid-listview');
+    } else {
+      gridWrapper.classList.remove('productgrid-listview');
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-collection-view]');
+    if (!btn) return;
+    const view = btn.getAttribute('data-collection-view');
+    localStorage.setItem('collectionView', view);
+    applySavedView();
+  });
+
+  // -------------------------------------------------------
+  // FIX 3: Re-init Quick Buy (Add to Cart) buttons
+  // -------------------------------------------------------
+  function reinitQuickBuyButtons() {
+    const quickBuyBtns = document.querySelectorAll(
+      PRODUCT_GRID_SELECTOR + ' [data-quick-buy]'
+    );
+
+    quickBuyBtns.forEach(function(btn) {
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', function(e) {
+        const variantId = this.getAttribute('data-variant-id');
+        const itemImgSrc = this.closest('[data-product-item]')?.querySelector('figure img').src;
+        const itemTitle = this.closest('[data-product-item]')?.querySelector('.productitem--title')?.textContent.trim() || 'Empty';
+        const itemPrice = this.closest('[data-product-item]')?.querySelector('.money[data-price]')?.textContent.trim() || 'Empty';
+        const qtny = this.closest('[data-product-item]')?.querySelector('.quantity-selector__input')?.value || 1;
+
+        if (!variantId) return;
+
+        if (window.theme && window.theme.QuickBuy) {
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const btn = this;
+        const originalText = btn.querySelector('.atc-button--text');
+        if (originalText) originalText.textContent = 'Adding...';
+        btn.disabled = true;
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: qtny })
+        })
+        .then(r => r.json())
+        .then(() => {
+          if (originalText) originalText.textContent = 'Added!';
+          return fetch('/cart.js');
+        })
+        .then(res => res.json())
+        .then(cart => {
+          let ship, percentage;
+          if (cart.total_price < 150 * 100) {
+            ship = (150 * 100 - cart.total_price);
+            percentage = ((cart.total_price / (150 * 100)) * 100).toFixed(0);
+          } else {
+            ship = 0;
+            percentage = 100;
+          }
+          const itemCount = cart.item_count;
+          const shipFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ship / 100);
+          const subtotalFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cart.total_price / 100);
+
+          const header = document.querySelector('header');
+          if (header) {
+            header.insertAdjacentHTML('beforeend',
+              `<section class="atc-banner--container" id="injected-header-content" role="log" data-atc-banner="" data-animation-state="open" tabindex="-1"><div class="atc-banner--outer"><div class="atc-banner--inner"><div class="atc-banner--product"><h2 class="atc-banner--product-title"><span class="atc-banner--product-title--icon"><svg class="icon-checkmark" aria-hidden="true" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg" width="18" height="13" viewBox="0 0 18 13"><path fill="currentColor" fill-rule="evenodd" d="M6.23 9.1L2.078 5.2 0 7.15 6.23 13 18 1.95 15.923 0z"></path></svg></span>Added to your cart:</h2><div class="atc--product"><div class="atc--product-image" data-atc-banner-product-image="${itemImgSrc}"><img src="${itemImgSrc}" alt="${itemTitle}"></div><div class="atc--product-details"><h2 class="atc--product-details--title" data-atc-banner-product-title="${itemTitle}">${itemTitle}</h2><span class="atc--product-details--options" data-atc-banner-product-options=""></span><span class="atc--product-details--price"><span class="atc--product-details--price-quantity" data-atc-banner-product-price-quantity="${qtny}">${qtny} × </span><span class="atc--product-details--price-value money" data-atc-banner-product-price-value="">${itemPrice}</span></span></div></div></div><div class="atc-banner--cart"><div class="atc-banner--cart-subtotal"><span class="atc-subtotal--label">Cart subtotal</span><span class="atc-subtotal--price money" data-atc-banner-cart-subtotal="">${subtotalFormatted}</span></div><div class="free-shipping-bar free-shipping-bar--atc-banner" data-free-shipping-bar=""><p class="free-shipping-bar__status"><strong>${shipFormatted}</strong> away from free shipping!</p><div class="free-shipping-bar__meter"><div class="free-shipping-bar__progress" style="--width: ${percentage}%"></div></div></div><footer class="atc-banner--cart-footer"><a class="button-secondary atc-button--viewcart mdc-ripple-surface mdc-ripple-upgraded" href="/cart" data-atc-banner-cart-button="">View cart (<span>${itemCount}</span>)</a><form class="atc-banner__form" action="/cart" method="post" aria-label="cart checkout"><button class="button-primary atc-button--checkout mdc-ripple-surface mdc-ripple-upgraded" type="submit" name="checkout"><span>Checkout</span></button></form></footer></div></div><button class="atc-banner--close" type="button" aria-label="Close" data-atc-banner-close=""><svg aria-hidden="true" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13"><path fill="currentColor" fill-rule="evenodd" d="M5.306 6.5L0 1.194 1.194 0 6.5 5.306 11.806 0 13 1.194 7.694 6.5 13 11.806 11.806 13 6.5 7.694 1.194 13 0 11.806 5.306 6.5z"></path></svg></button></div></section>`
+            );
+          }
+          setTimeout(() => {
+            if (originalText) originalText.textContent = 'Add to cart';
+            btn.disabled = false;
+          }, 1500);
+          const removeButton = document.querySelector('.atc-banner--close');
+          removeButton.addEventListener('click', function() {
+            const injected = document.getElementById('injected-header-content');
+            if (injected) injected.remove();
+          });
+          if (window.theme && window.theme.Cart) {
+            if (typeof window.theme.Cart.getCart === 'function') window.theme.Cart.getCart();
+            if (typeof window.theme.Cart.open === 'function') window.theme.Cart.open();
+          }
+        })
+        .catch(err => {
+          console.error('Cart error:', err);
+          if (originalText) originalText.textContent = 'Add to cart';
+          btn.disabled = false;
+        });
+      });
+    });
+  }
+
+  // -------------------------------------------------------
+  // CORE: Fetch new grid HTML, swap DOM, reinit everything
+  // -------------------------------------------------------
+  function fetchAndRender(newURL) {
+    showLoading();
+
+    fetch(buildFetchURL(newURL))
+      .then(function (response) {
+        if (!response.ok) throw new Error('Network error: ' + response.status);
+        return response.text();
+      })
+      .then(function (html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const newGrid = doc.querySelector(PRODUCT_GRID_SELECTOR);
+        const currentGrid = document.querySelector(PRODUCT_GRID_SELECTOR);
+
+        if (newGrid && currentGrid) {
+          currentGrid.innerHTML = newGrid.innerHTML;
+        }
+
+        history.pushState({ path: newURL }, '', newURL);
+
+        hideLoading();
+
+        if (currentGrid) {
+          currentGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Re-init all systems
+        reinitLazyImages();
+        reinitProductCards();
+        applySavedView();
+
+        // ✅ Run best-seller client-side sort AFTER DOM is updated
+        // Runs only when sort_by=best-selling is active in the URL
+        sortByOrderCount();
+
+        if (window.initCollectionSearch) {
+          window.initCollectionSearch();
+        }
+
+        // Re-execute inline <script> tags from injected section
+        const scripts = currentGrid.querySelectorAll('script');
+        scripts.forEach(function(script) {
+          if (script.type === 'application/json') return;
+          const newScript = document.createElement('script');
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          document.body.appendChild(newScript);
+        });
+
+      })
+      .catch(function (error) {
+        console.error('AJAX Filter Error:', error);
+        window.location = newURL;
+      });
+  }
+
+  // -------------------------------------------------------
+  // INTERCEPT: ALL filter link clicks
+  // -------------------------------------------------------
+  document.addEventListener('click', function (e) {
+
+    const activeFilterItem = e.target.closest('.active-filter-group__item');
+    if (activeFilterItem && activeFilterItem.href) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      fetchAndRender(activeFilterItem.href);
+      return;
+    }
+
+    const clearAll = e.target.closest('.filter-item-clear-all');
+    if (clearAll && clearAll.href) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      fetchAndRender(clearAll.href);
+      return;
+    }
+
+    const filterLink = e.target.closest('a[data-filter-input]');
+    if (filterLink && filterLink.href) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      fetchAndRender(filterLink.href);
+      return;
+    }
+
+    const paginationLink = e.target.closest('.pagination--inner a');
+    if (paginationLink && paginationLink.href) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      fetchAndRender(paginationLink.href);
+      return;
+    }
+
+  }, true);
+
+  // -------------------------------------------------------
+  // INTERCEPT: Sort modal buttons (Empire mobile sort)
+  // -------------------------------------------------------
+  document.addEventListener('click', function (e) {
+    const sortModalBtn = e.target.closest('[data-productgrid-trigger-sort-button]');
+    if (sortModalBtn && !sortModalBtn.disabled) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const sortValue = sortModalBtn.getAttribute('value');
+      if (sortValue) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sortValue);
+        fetchAndRender(url.toString());
+        const modal = document.querySelector('.utils-sortby--modal');
+        if (modal) modal.setAttribute('aria-hidden', 'true');
+      }
+      return;
+    }
+  }, true);
+
+  // -------------------------------------------------------
+  // INTERCEPT: Sort by <select> dropdown (desktop)
+  // -------------------------------------------------------
+  document.addEventListener('change', function (e) {
+    const sortSelect = e.target.closest('select[data-productgrid-trigger-sort]');
+    if (sortSelect) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const url = new URL(window.location.href);
+      url.searchParams.set('sort_by', sortSelect.value);
+      fetchAndRender(url.toString());
+
+      return;
+    }
+  }, true);
+
+  // -------------------------------------------------------
+  // HANDLE: Browser back / forward buttons
+  // -------------------------------------------------------
+  window.addEventListener('popstate', function () {
+    fetchAndRender(window.location.href);
+  });
+
+  // -------------------------------------------------------
+  // INIT: Run sort on initial page load if URL has best-selling
+  // -------------------------------------------------------
+  document.addEventListener('DOMContentLoaded', function () {
+    sortByOrderCount();
+  });
+
+  console.log('Empire AJAX Filters: Initialized ✓');
+
+})();
+</script>
+<script>
+(function () {
+
+  const INPUT_ID = 'searchajaxcollpditm';
+  const BUTTON_CLASS = '.boost-pfs-in-collection-search-button';
+  const PRODUCT_SELECTOR = '[data-product-item]';
+
+  let debounceTimer;
+  let currentQuery = '';
+
+  function filterProducts(query) {
+    const items = document.querySelectorAll(PRODUCT_SELECTOR);
+    items.forEach(item => {
+      const title = item.querySelector('.productitem--title')?.textContent.toLowerCase() || '';
+      item.style.display = (!query || title.includes(query)) ? '' : 'none';
+    });
+  }
+
+  function initCollectionSearch() {
+    const input = document.getElementById(INPUT_ID);
+    const button = document.querySelector(BUTTON_CLASS);
+
+    if (!input) return;
+
+    input.value = currentQuery;
+
+    if (currentQuery) filterProducts(currentQuery);
+
+    if (input._searchBound) return;
+    input._searchBound = true;
+
+    function runSearch() {
+      currentQuery = input.value.trim().toLowerCase();
+      filterProducts(currentQuery);
+    }
+
+    input.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(runSearch, 300);
+    });
+
+    button?.addEventListener('click', runSearch);
+
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+  }
+
+  window.initCollectionSearch = initCollectionSearch;
+
+  document.addEventListener('DOMContentLoaded', initCollectionSearch);
+
+})();
+</script>
+<script>
+(function () {
+  const path = window.location.pathname;
+  const params = new URLSearchParams(window.location.search);
+
+  // Target only this collection
+  if (path === '/collections/best-seller') {
+
+    // If sort_by is missing or different
+    if (params.get('sort_by') !== 'best-selling') {
+      params.set('sort_by', 'best-selling');
+
+      const newUrl = path + '?' + params.toString();
+
+      // Use replace to avoid back button loop
+      window.location.replace(newUrl);
+    }
+  }
+})();
+</script>

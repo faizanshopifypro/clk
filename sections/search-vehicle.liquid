@@ -1,0 +1,65 @@
+{{ "search-vehicle.css" | asset_url | stylesheet_tag }}
+
+{% unless request.design_mode %}
+  <script src="{{ 'search-vehicle.js' | asset_url }}" defer></script>
+{% endunless %}
+
+{% render 'breadcrumbs' %}
+
+<div class="search-vehicle-wrapper">
+  <div class="page-width">
+
+    <div class="section-header">
+      {% if section.settings.heading != blank %}
+        <div class="collection--title">{{ section.settings.heading }}</div>
+      {% endif %}
+    </div>
+
+    <search-vehicle>
+      <div class="left-wrapper">
+        <facets-menu></facets-menu>
+      </div>
+      <div class="right-wrapper">
+        <button class="mobile-refine-btn" aria-label="Refine by filters">
+          Refine by
+        </button>
+        <sorting-menu></sorting-menu>
+        <div id="js-product-grid" class="product-grid-wrapper">
+          <div class="loader-wrapper">
+            <div class="loader"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mobile-filters-drawer" id="mobile-filters-drawer">
+        <div class="drawer-overlay"></div>
+        <div class="drawer-content">
+          <div class="drawer-header">
+            <h3>Refine by</h3>
+            <button class="drawer-close-btn" aria-label="Close filters">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24">
+                <path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="drawer-body">
+            <facets-menu id="mobile-facets-menu"></facets-menu>
+          </div>
+        </div>
+      </div>
+    </search-vehicle>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search Vehicle",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading"
+    }
+  ]
+}
+{% endschema %}

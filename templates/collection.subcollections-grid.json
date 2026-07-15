@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-subcollections-grid",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

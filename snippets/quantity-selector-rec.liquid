@@ -1,0 +1,117 @@
+ {% if product.tags contains '10-Qty' or  product.tags contains '5-Qty' %}
+    {% comment %}
+  @param context {String}
+    The context, either 'product' or 'cart'
+
+  @param item {Object}
+    The cart item object
+{% endcomment %}
+<style>
+  .qty_info {
+  color: #d32f2f;
+}
+</style>
+<div class="warn"></div>
+{% assign quantity_increment_value = settings.quantity_increment_value %}
+
+{% comment %}
+  Minimum quantity logic based on product tags
+{% endcomment %}
+{% assign min_qty = 1 %}
+{% assign initial_value = quantity_increment_value %}
+
+
+  {% if product.tags contains '10-Qty' %}
+    {% assign min_qty = 10 %}
+    {% assign initial_value = 10 %}
+  {% elsif product.tags contains '5-Qty' %}
+    {% assign min_qty = 5 %}
+    {% assign initial_value = 5 %}
+  {% endif %}
+
+
+<quantity-selector
+  class="quantity-selector"
+  data-quantity-selector
+  data-min-quantity="{{ initial_value }}"
+  data-step="{{ initial_value }}"
+>
+
+  <label
+    class="quantity-selector__label"
+    for="quantity-selector__input-{{ section.id }}"
+  >
+    {{- 'general.general.quantity' | t -}}
+  </label>
+
+  <div class="quantity-selector__wrapper">
+    <div
+      class="
+        quantity-selector__button-wrapper
+        quantity-selector__button-wrapper--minus
+        {% if initial_value <= min_qty %}quantity-selector__button-wrapper--disabled{% endif %}
+      "
+      data-button-wrapper
+      data-button-wrapper-minus
+    >
+      <button
+        class="
+          quantity-selector__button
+          quantity-selector__button--minus
+        "
+        type="button"
+        name="minus"
+        aria-label="{{ 'general.accessibility.decrease_quantity' | t: increment: quantity_increment_value }}"
+        data-quantity-minus
+        {% if initial_value <= min_qty %}disabled{% endif %}
+      >
+        {%
+          render 'icon-library',
+          id: 'icon-minus',
+        %}
+      </button>
+    </div>
+
+    <input
+      class="quantity-selector__input"
+      id="quantity-selector__input-{{ section.id }}"
+      aria-label="{{ 'general.general.quantity' | t }}"
+      name="{%- if context == 'product' -%}quantity{%- else -%}updates[]{%- endif -%}"
+      type="number"
+        min="{{ min_qty }}"
+        value="{{ initial_value }}"
+      step="{{ initial_value }}"
+      data-quantity-input
+      data-increment-value="{{ initial_value }}"
+      readonly
+    >
+
+    <div
+      class="
+        quantity-selector__button-wrapper--plus
+        quantity-selector__button-wrapper
+      "
+      data-button-wrapper
+      data-button-wrapper-plus
+    >
+      <button
+        class="
+          quantity-selector__button
+          quantity-selector__button--plus
+        "
+        type="button"
+        name="plus"
+        aria-label="{{ 'general.accessibility.increase_quantity' | t: increment: quantity_increment_value }}"
+        data-quantity-plus
+      >
+        {%
+          render 'icon-library',
+          id: 'icon-plus',
+        %}
+      </button>
+    </div>
+  </div>
+</quantity-selector>
+
+
+{% endif %}

@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-subcollections-featured-collection",
+      "settings": {
+        "show_breadcrumbs": true,
+        "show_collection_description": true,
+        "show_collection_image": true,
+        "show_subcollection_menu": true,
+        "layout": "slideshow",
+        "product_count": 4,
+        "cta_label": "Shop all",
+        "shop_all_card_enable": true,
+        "shop_all_card_text_color": "#1d1d1d",
+        "shop_all_card_background_color": "#e9ad14"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,88 @@
+ {% capture meta_list %}
+           Replacement Brush : {{ product.metafields.custom.replacement_brush }}|
+           Replacement Cutters(s) : {{ product.metafields.custom.replacement_cutters }}|
+           Power Supply : {{ product.metafields.custom.power_supply }}|
+           Dogging : {{ product.metafields.my_fields.dogging }}|
+           Dimensions : {{ product.metafields.my_fields.dimensions }}| 
+           Replacement For : {{ product.metafields.my_fields.replacement_for}}|
+           Feature(s) :{{ product.metafields.my_fields.features_ }}|
+           Optional Functions :  {{ product.metafields.my_fields.optional_functions }}| 
+           Mounting Hole Pattern : {{ product.metafields.my_fields.mounting_hole_pattern_ }}|
+           Screw(s) :   {{ product.metafields.my_fields.screw_s_ }}|
+           Arm & Bracket(s)  {{ product.metafields.my_fields.arm_brackets_ }}|
+           Valves :  {{ product.metafields.my_fields.valves_ }}|
+           Materials : {{ product.metafields.my_fields.material_ }}|
+           Programing Instructions :  {{ product.metafields.my_fields.programing_instructions }}|
+           Code Series :   {{ product.metafields.my_fields.code_series_ }}|
+           Buttons :   {{ product.metafields.my_fields.buttons }}|
+           Emergency Key Included :   {{ product.metafields.my_fields.emergency_key_included_ }}|
+           Replacement Emergency Key :   {{ product.metafields.my_fields.replacement_emergency_key_ }}|
+           Cam Included :   {{ product.metafields.my_fields.cam_included_ }}|
+           Other Cams Available :   {{ product.metafields.my_fields.other_cams_available_ }}|
+           Latch :   {{ product.metafields.my_fields.latch_ }}|
+           Strike Plate :   {{ product.metafields.my_fields.strike_plate_ }}|
+           Grade :   {{ product.metafields.my_fields.grade_ }}|
+           Standards :   {{ product.metafields.my_fields.standards_ }}|
+           Keys :   {{ product.metafields.my_fields.keys_ }}|
+           Thru Bolt :   {{ product.metafields.my_fields.thru_bolt_ }}|
+           Warranty :   {{ product.metafields.my_fields.warranty_ }}|
+           Cross Bore :   {{ product.metafields.my_fields.cross_bore_}}|
+           Edge Bore :   {{ product.metafields.my_fields.edge_bore_}}|
+           Keying :   {{ product.metafields.my_fields.keying_ }}|
+           Special Marking(s) :   {{ product.metafields.my_fields.special_marking_s_}}|
+           FCC ID :   {{ product.metafields.my_fields.fcc_id}}|
+           Chip :   {{ product.metafields.my_fields.chip }}|
+           Reuseable :   {{ product.metafields.my_fields.reuseable }}|
+           Battery :   {{ product.metafields.my_fields.battery }}|
+           Test Key :   {{product.metafields.my_fields.test_key }}|
+           Alternative Key :   {{ product.metafields.my_fields.alternative_key }}|
+           Brands that use this Key: :   {{ product.metafields.my_fields.brands_that_use_this_ }}|
+           Chipless Key :   {{ product.metafields.my_fields.chipless_key_ }}|
+           Frequency :   {{ product.metafields.my_fields.frequency_ }}|
+           Compatible FCC ID(s): :   {{ product.metafields.my_fields.compatible_fcc_id_ }}|
+           Handing :   {{ product.metafields.my_fields.handing_ }}|
+           Door Fitting :   {{ product.metafields.my_fields.door_fitting_ }}|
+           Cylinder :   {{ product.metafields.my_fields.cylinder_ }}|
+           Clutch Function :   {{ product.metafields.my_fields.clutch_function_ }}|
+           Alternative Part Number(s) :   {{ product.metafields.my_fields.alternative_part_number_s_ }}|
+           Country Of Origin :   {{ product.metafields.my_fields.country_of_origin_ }}|
+           Condition :   {{ product.metafields.my_fields.condition }}|
+           Material :   {{ product.metafields.my_fields.material }}|
+           Pin Diameter :   {{ product.metafields.my_fields.pin_diameter }}|
+           Pin Length :   {{ product.metafields.my_fields.pin_length_ }}|
+           Pins Per Pack :   {{ product.metafields.my_fields.pins_per_pack_ }}|  
+           Works With :   {{ product.metafields.accentuate.works_with }}|
+           Key Type :   {{ product.metafields.accentuate.key_type }}|
+           Function :   {{ product.metafields.accentuate.function }}|
+           Keyway :   {{product.metafields.accentuate.keyway }}|
+           Length :   {{ product.metafields.accentuate.Length }}|
+           Finish :   {{ product.metafields.accentuate.finish }}|
+           Shackle Diameter :   {{ product.metafields.accentuate.shackle_diameter }}|
+           Shackle Length :   {{ product.metafields.accentuate.shackle_length }}|
+           Shackle Options :   {{ product.metafields.accentuate.shackle_options }}
+       {% endcapture %} 
+     {% assign meta_array = meta_list | split: '|'%}
+     {% assign count = 0 %}
+
+      <li class="pa-4"><strong> Weight </strong>: 
+          {{ product.variants.first.weight | weight_with_unit }}
+     </li>
+     {% for meta in meta_array %}
+        {% assign meta_vals = meta | split: ':' %}
+        {% if meta_vals[1] != blank %}
+           {% assign count = count | plus: 1 %}
+             {% if count == total %}  {% break %}
+             {% else %} 
+               <li class="pa-4"><strong> {{meta_vals[0]}}</strong>: {{meta_vals[1]}}</li> 
+              {% endif %} 
+        {% endif %}
+      {% endfor %}
+      
+      {% if  product.metafields.my_fields.download_s_  != blank %}
+          {% assign file_name_with_shopify_extension =  product.metafields.my_fields.download_s_ | file_url | split: '/' | last %} <!-- parse the file name from the URL -->
+          {% assign file_name = file_name_with_shopify_extension | split: '?' | first %}
+          <li class="pa-4"><strong> Download(s)</strong>:
+              <a class="download_spec" href=" {{ product.metafields.my_fields.download_s_ | file_url }}" target="_blank">
+                           Click to view {{ file_name }} </a>
+          </li> 
+      {% endif %} 

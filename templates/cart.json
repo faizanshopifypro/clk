@@ -1,0 +1,86 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-cart",
+      "blocks": {
+        "61ec9805-6218-4911-aeb8-1949ee9fc39f": {
+          "type": "richtext",
+          "settings": {
+            "richtext": "<p>Choosing CLK Supplies means joining a community that genuinely cares about your success. We’re more than just another supplier. Our commitment to quality, support, and community sets us apart from the rest.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "61ec9805-6218-4911-aeb8-1949ee9fc39f"
+      ],
+      "settings": {
+        "show_vendor": false,
+        "show_sku": true,
+        "enable_order_notes": true,
+        "enable_shipping_calc": true,
+        "shipping_calc_default_country": "United States"
+      }
+    },
+    "dynamic_highlights_banner_KdVnkA": {
+      "type": "dynamic-highlights-banner",
+      "blocks": {
+        "highlight_B6Kgj9": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-label-tag",
+            "title": "On Sale",
+            "text": "",
+            "link": "https:\/\/www.clksupplies.com\/collections\/sale"
+          }
+        },
+        "highlight_P6eTQ9": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-credit-card",
+            "title": "Financing",
+            "text": "",
+            "link": "https:\/\/www.clksupplies.com\/pages\/finance"
+          }
+        },
+        "highlight_xH9t4B": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-award-trophy",
+            "title": "Special Offers",
+            "text": "",
+            "link": "https:\/\/www.clksupplies.com\/collections\/special-offers"
+          }
+        },
+        "highlight_q7nJCP": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-question-mark",
+            "title": "What's New",
+            "text": "",
+            "link": "https:\/\/www.clksupplies.com\/collections\/all?sort=created-descending"
+          }
+        }
+      },
+      "block_order": [
+        "highlight_B6Kgj9",
+        "highlight_P6eTQ9",
+        "highlight_xH9t4B",
+        "highlight_q7nJCP"
+      ],
+      "disabled": true,
+      "settings": {
+        "section_spacing": false,
+        "section_width": "full-width",
+        "icon_layout": "center",
+        "color": "#000000",
+        "icon_color": "#cc1313",
+        "background_color": "#ffffff",
+        "mobile_layout": "grid"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "dynamic_highlights_banner_KdVnkA"
+  ]
+}

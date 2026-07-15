@@ -1,0 +1,119 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "announcement-bar": {
+      "type": "static-announcement",
+      "settings": {
+        "logo": "shopify:\/\/shop_images\/CLK_Logo_White_a4e643b0-d924-45a5-84e9-64e561a4ce3a.png",
+        "logo_height": 40,
+        "logo_width": 150,
+        "menu": "shop-only",
+        "quick_links": "top-sellers",
+        "show_announcement": true,
+        "homepage_announcement": false,
+        "announcement_text": "FREE SHIPPING ON ALL ORDERS OVER $150*",
+        "announcement_text_mobile": "",
+        "announcement_link": "https:\/\/clksupplies.com",
+        "announcement_color": "#ffffff",
+        "announcement_background": "#ffffff"
+      }
+    },
+    "utility-bar": {
+      "type": "static-utility-bar",
+      "disabled": true,
+      "settings": {
+        "use_full_width": false,
+        "background_color": "#121212",
+        "link_color": "#ffffff",
+        "link_hover_color": "#e9ad14",
+        "border_color": "#353535",
+        "menu": "footer",
+        "show_menu_mobile": true,
+        "mobile_layout": "below",
+        "show_locale_selector": true,
+        "show_currency_selector": true,
+        "show_social_icons": true
+      }
+    },
+    "header": {
+      "type": "static-header",
+      "blocks": {
+        "meganav_images_gMbxC7": {
+          "type": "meganav_images",
+          "disabled": true,
+          "settings": {
+            "meganav_trigger": "Shop",
+            "text_1": "",
+            "link_1": "",
+            "position_1": "first",
+            "size_1": "small",
+            "text_2": "",
+            "link_2": "",
+            "position_2": "first",
+            "size_2": "small"
+          }
+        },
+        "40ac96c8-c2f4-4076-bedc-58c95e456d11": {
+          "type": "meganav_sidenav",
+          "disabled": true,
+          "settings": {
+            "meganav_trigger": "Shop",
+            "submenu_layout": "text_columns",
+            "image_aspect_ratio": "natural",
+            "image_crop": true
+          }
+        },
+        "meganav_images_nTLnbx": {
+          "type": "meganav_images",
+          "disabled": true,
+          "settings": {
+            "meganav_trigger": "Learning Center",
+            "text_1": "",
+            "link_1": "",
+            "position_1": "first",
+            "size_1": "small",
+            "text_2": "",
+            "link_2": "",
+            "position_2": "first",
+            "size_2": "small"
+          }
+        }
+      },
+      "block_order": [
+        "meganav_images_gMbxC7",
+        "40ac96c8-c2f4-4076-bedc-58c95e456d11",
+        "meganav_images_nTLnbx"
+      ],
+      "settings": {
+        "sticky_header": true,
+        "full_width_header": false,
+        "filter_search_by": "disabled",
+        "enable_live_search": true,
+        "show_mobile_search_bar": true,
+        "enable_live_search_images": true,
+        "quick_links": "most-popular",
+        "menu": "shop-only",
+        "secondary_menu": "",
+        "small_promo_heading": "",
+        "small_promo_text": "",
+        "small_promo_text_mobile": "",
+        "small_promo_link": "",
+        "small_promo_icon": "none",
+        "cart_icon": "icon-cart"
+      }
+    },
+    "free_services_mGeVGq": {
+      "type": "free-services",
+      "disabled": true,
+      "name": "Free Services",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "utility-bar",
+    "header",
+    "free_services_mGeVGq"
+  ]
+}

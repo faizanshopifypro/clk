@@ -1,0 +1,134 @@
+{
+  "sections": {
+    "b96fe6e3-e5a1-4947-9243-da6b91e47c77": {
+      "type": "dynamic-slideshow",
+      "blocks": {
+        "template--16993219215637__b96fe6e3-e5a1-4947-9243-da6b91e47c77-166976157506306937-0": {
+          "type": "slide",
+          "settings": {
+            "title": "About Us",
+            "text": "",
+            "color": "#ffffff",
+            "link": "",
+            "text_alignment": "center",
+            "button_one_label": "",
+            "button_one_link": "",
+            "button_one_style": "primary",
+            "button_two_label": "",
+            "button_two_link": "",
+            "button_two_style": "primary",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 50
+          }
+        }
+      },
+      "block_order": [
+        "template--16993219215637__b96fe6e3-e5a1-4947-9243-da6b91e47c77-166976157506306937-0"
+      ],
+      "settings": {
+        "enable_autoplay": false,
+        "autoplay_duration": 8,
+        "slideshow_width": "full",
+        "slideshow_height": "original",
+        "slideshow_height_mobile": "small",
+        "slideshow_text_below_image": false
+      }
+    },
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "3cb979b3-994d-45c8-b105-cbc2f024ee23": {
+      "type": "dynamic-rich-text",
+      "settings": {
+        "width": "wide",
+        "title": "Established in 1857",
+        "text": "<p>Today, Klein Tools, Inc. represents much more than Klein pliers. The company's product line has broadened to include virtually every major type of hand tool used in construction, electronics, mining, and general industry in addition to the electrical and telecommunications fields. Klein Tools also supplies a line of occupational protective equipment, which is exhibited in a separate catalog.<\/p><p>Internationally, Klein's products are available around the world through a well-established network of agents and distributors who stock the products that are required for their particular markets. Klein's reputation as a leading producer of professional-quality products is global.<\/p>",
+        "heading_size": "large",
+        "text_alignment": "left"
+      }
+    },
+    "810036b1-94bc-48a3-aa9a-9fe56ba1b0a1": {
+      "type": "dynamic-rich-text",
+      "settings": {
+        "width": "regular",
+        "title": "\"We as a company are committed to manufacturing industry-leading products that make a difference in day-to-day building.\"",
+        "text": "<p>- Jeff Taylor, CEO<\/p>",
+        "heading_size": "small",
+        "text_alignment": "center"
+      }
+    },
+    "98b8c483-3176-4800-800b-9c443ab88765": {
+      "type": "dynamic-rich-text",
+      "settings": {
+        "width": "wide",
+        "title": "Our company today",
+        "text": "<p>The Klein brand is the #1 preferred hand tool in the electrical industry, as well as one of the leading brands used in the maintenance, construction, and industrial trades. Loyalty to Klein Tools is strong due to Klein Tools' commitment to professional tradesmen; professionals feel the difference every day.<\/p><p>The world has come a long way since 1857. Klein has become a multi-million dollar manufacturer... yet a company still concerned about meeting professional needs - and making products to professional-quality standards.<\/p><p>Klein Tools is still owned and managed by the Klein family. Direct descendants of Mathias Klein are actively engaged in every aspect of the business. Its products are still sold through distributors who serve the professional tradesman. And Klein Tools still makes dependable, efficient, and durable tools and equipment. Nothing less than the best.<\/p><p>Klein remains dedicated to supplying only the finest quality products. Made for professional users, Klein tools are available through stocking distributors worldwide.<\/p>",
+        "heading_size": "large",
+        "text_alignment": "left"
+      }
+    },
+    "c450fed5-a650-42c1-a4db-92aac47deb55": {
+      "type": "dynamic-highlights-banner",
+      "blocks": {
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-0": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-delivery",
+            "title": "Free Shipping",
+            "text": "<p>When you spend $250+<\/p>"
+          }
+        },
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-1": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-chat-alternate",
+            "title": "Need help?",
+            "text": "<p>Contact our support team today<\/p>"
+          }
+        },
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-2": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-information",
+            "title": "Warranty Info",
+            "text": "<p>Offering a range of policies<\/p>"
+          }
+        },
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-3": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-pin",
+            "title": "Find a retailer",
+            "text": "<p>Locate the right inventory<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-0",
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-1",
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-2",
+        "template--17094637682965__c450fed5-a650-42c1-a4db-92aac47deb55-1669761949558b616b-3"
+      ],
+      "settings": {
+        "section_spacing": true,
+        "section_width": "full-width",
+        "icon_layout": "center",
+        "color": "#121212",
+        "icon_color": "#e9ad14",
+        "background_color": "#f8f8f8",
+        "mobile_layout": "slider"
+      }
+    }
+  },
+  "order": [
+    "b96fe6e3-e5a1-4947-9243-da6b91e47c77",
+    "main",
+    "3cb979b3-994d-45c8-b105-cbc2f024ee23",
+    "810036b1-94bc-48a3-aa9a-9fe56ba1b0a1",
+    "98b8c483-3176-4800-800b-9c443ab88765",
+    "c450fed5-a650-42c1-a4db-92aac47deb55"
+  ]
+}

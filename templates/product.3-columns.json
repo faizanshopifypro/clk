@@ -1,0 +1,108 @@
+{
+  "sections": {
+    "main": {
+      "type": "static-product-3-columns",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "vendor": {
+          "type": "vendor",
+          "disabled": true,
+          "settings": {}
+        },
+        "05a8c9d9-1e5c-420e-ac2c-6263587dfa9f": {
+          "type": "sku",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "9cb57ca5-775b-4b59-8c0e-689a2cb0b1d0": {
+          "type": "collapsible-tab",
+          "settings": {
+            "collapsible_tab_heading": "Specifications",
+            "collapsible_tab_text": "<p>Use this text to share information about your product.<\/p>"
+          }
+        },
+        "fd063f44-474e-4612-8128-8a0e45c8567f": {
+          "type": "collapsible-tab",
+          "disabled": true,
+          "settings": {
+            "collapsible_tab_heading": "Shipping & Returns",
+            "collapsible_tab_text": "<p>Use this text to share information about your product.<\/p>"
+          }
+        },
+        "2df10072-0e09-45ed-81d2-f3e4f0e7da62": {
+          "type": "collapsible-tab",
+          "settings": {
+            "collapsible_tab_heading": "Warranty",
+            "collapsible_tab_text": "<p>To receive more information about our warranty policies, get in touch and we are happy to send you our different offerings. <a href=\"\/pages\/contact\" title=\"Contact\">Contact us here<\/a>.<\/p>"
+          }
+        },
+        "6bf64849-fd3b-42df-bdfb-75dbe1b9e04e": {
+          "type": "key_details",
+          "settings": {
+            "icon": "icon-delivery-package",
+            "title": "Standard shipping",
+            "text": "<p>Estimated arrival: 7-10 days<\/p>",
+            "text_color": "#1D1D1D",
+            "icon_color": "#1D1D1D",
+            "background_color": "#f2f2f2"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "vendor",
+        "05a8c9d9-1e5c-420e-ac2c-6263587dfa9f",
+        "rating",
+        "price",
+        "description",
+        "9cb57ca5-775b-4b59-8c0e-689a2cb0b1d0",
+        "fd063f44-474e-4612-8128-8a0e45c8567f",
+        "2df10072-0e09-45ed-81d2-f3e4f0e7da62",
+        "6bf64849-fd3b-42df-bdfb-75dbe1b9e04e"
+      ],
+      "settings": {
+        "social_share": true,
+        "enable_local_pickup": true,
+        "gallery_aspect_ratio": "natural",
+        "gallery_image_crop": false,
+        "gallery_thumbnail_position": "below",
+        "gallery_video_autoplay": true,
+        "gallery_video_looping": true,
+        "gallery_hover_zoom": "disabled",
+        "gallery_click_to_zoom": "always"
+      }
+    },
+    "recommendations": {
+      "type": "static-product-recommendations",
+      "settings": {
+        "show_product_recommendations": true,
+        "product_recommendations_heading": "You may also like"
+      }
+    },
+    "recently-viewed": {
+      "type": "static-recently-viewed",
+      "settings": {
+        "enable_recently_viewed_products": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "recently-viewed"
+  ]
+}

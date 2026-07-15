@@ -1,0 +1,1262 @@
+{%- comment %}<locksmith:85a1>{% endcomment -%}
+  {%- include 'locksmith' -%}
+{%- comment %}</locksmith:85a1>{% endcomment -%}
+
+<!doctype html>
+<html class="no-js no-touch" lang="{{ request.locale.iso_code }}">
+  <head>
+    {{ locksmith_initializations }}
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    <link rel="preconnect" href="https://fonts.shopifycdn.com">
+    <link rel="preconnect" href="https://v.shopify.com">
+    <link rel="preconnect" href="https://cdn.shopifycloud.com">
+
+    <title>
+      {{- page_title -}}
+
+      {%- if current_tags -%}
+        {% capture cat_array %}{%- render 'advanced-tag-loop' -%}{% endcapture %}
+        {% assign cat_array = cat_array | split: '|' %}
+        {% assign title_tags = '' %}
+        {% assign meta_tags = current_tags | join: ', ' %}
+        {%- for tag in current_tags -%}
+          {% assign is_advanced_tag = false %}
+          {% assign cat = tag | split: '_' | first %}
+
+          {%- unless cat == tag -%}
+            {%- if cat_array contains cat -%}
+              {% assign is_advanced_tag = true %}
+              {% assign title_tags = title_tags | append: ', ' | append: tag | replace_first: '_', ': ' %}
+            {%- endif -%}
+          {%- endunless -%}
+
+          {%- unless is_advanced_tag -%}
+            {% assign title_tags = title_tags | append: ', ' | append: tag %}
+          {%- endunless -%}
+        {%- endfor -%}
+        {{ 'general.title.tags' | t: tags: title_tags | remove_first: ', ' }}
+      {%- endif -%}
+
+      {%- if current_page != 1 -%}
+        {{- 'general.title.page' | t: page: current_page -}}
+      {%- endif -%}
+
+      {%- unless page_title contains shop.name -%}
+        {{- 'general.title.shop' | t: shop: shop.name -}}
+      {%- endunless -%}
+    </title>
+{% render 'magic360.headers' %}
+ 
+    {% if page_description != blank %}
+      {%- comment %}<locksmith:045c>{% endcomment -%}
+        {%- capture var %}{% render 'locksmith-variables', variable: 'transparent', hiding_scope: 'resource' %}{% endcapture %}{% if var == 'true' %}<meta name="description" content="{{ page_description | escape }}">{% endif -%}
+        {%- comment %}original: <meta name="description" content="{{ page_description | escape }}">{%- endcomment %}
+      {%- comment %}</locksmith:045c>{% endcomment -%}
+    {% endif %}
+
+    {% if settings.favicon != blank %}
+      <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {% endif %}
+
+    {% if template contains 'collection' and current_tags %}
+      <meta name="robots" content="noindex">
+      <link rel="canonical" href="{{ shop.url }}{{ collection.url }}">
+    {% else %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+
+    <meta name="viewport" content="width=device-width">
+
+    {% assign x_handle = settings.social_x | split: 'x.com/' | last | split: 'twitter.com/' | last %}
+    {% render 'social-meta-tags', twitter_handle: x_handle %}
+    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" crossorigin="anonymous">
+    <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
+    {{ 'custom.css' | asset_url | stylesheet_tag }}
+
+    {%- render 'head.import-map' -%}
+    {%- render 'head.es-module-shims' -%}
+    {%- render 'head.is-land' -%}
+
+    {%- render 'head.styles' -%}
+    {%- render 'head.styles.empire-legacy-settings-color' -%}
+    {%- render 'head.styles.empire-legacy-settings-font-face' -%}
+
+    {% comment %} Search Dialog {% endcomment %}
+    {{ 'dialog-component.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'dialog-component.js' | asset_url }}" defer></script>
+
+    {{ content_for_header }}
+
+    <style>
+      :root {
+        /* ------------------------------------------------------------
+          Typography
+        ------------------------------------------------------------ */
+        /* Body */
+        --element-text-font-family--body: {{ settings.type_body.family }}, {{ settings.type_body.fallback_families }};
+        --element-text-font-weight--body: {{ settings.type_body.weight }};
+        --element-text-font-size--rte-body: 16px;
+        --element-text-line-height--body: var(--line-height-lg);
+        /* Headings */
+        --element-text-font-family--heading: {{ settings.type_heading.family }}, {{ settings.type_heading.fallback_families }};
+        --element-text-font-weight--heading: {{ settings.type_heading.weight }};
+        --element-text-letter-spacing--heading: {{ settings.type_heading_spacing | divided_by: 100.0 | append: 'em' }};
+        --element-text-text-transform--heading: {% if settings.type_heading_capitalize %}uppercase{% else %}none{% endif %};
+
+        {%- case settings.type_heading_size -%}
+          {%- when '0.8' -%}
+            --element-text-font-size--heading-xl: 21px;
+            @media screen and (max-width: 719px) {
+              --element-text-font-size--heading-xl: 18px;
+            }
+          {%- when '1.0' -%}
+            --element-text-font-size--heading-xl: 26.25px;
+            @media screen and (max-width: 719px) {
+              --element-text-font-size--heading-xl: 22.5px;
+            }
+          {%- when '1.2' -%}
+            --element-text-font-size--heading-xl: 31.5px;
+            @media screen and (max-width: 719px) {
+              --element-text-font-size--heading-xl: 27px;
+            }
+          {%- else -%}
+            --element-text-font-size--heading-xl: 26.25px;
+            @media screen and (max-width: 719px) {
+              --element-text-font-size--heading-xl: 22.5px;
+            }
+        {%- endcase -%}
+
+        /* Buttons */
+        --element-button-font-size: 13px;
+        --element-button-radius: 3px;
+        --element-badge-radius: 0px;
+        --element-badge-px: var(--size-2);
+        --element-badge-py: var(--size-0-5);
+
+        /* ------------------------------------------------------------
+          Colors
+        ------------------------------------------------------------ */
+        --color-primary: {{ settings.color_text }};
+        --color-secondary: {{ settings.color_background }};
+        --root-color-primary: {{ settings.color_text}};
+        --root-color-secondary: {{ settings.color_background }};
+        --element-text-color: {{ settings.color_text }};
+        --color-sale-tag-text: #fff ;
+        --color-sale-tag: {{ settings.color_product_sale_accent }};
+      }
+
+      /* Override Shopify Payment Button styles */
+      .shopify-payment-button .shopify-payment-button__button--unbranded,
+      .shopify-payment-button .shopify-payment-button__button {
+        --element-text-line-height--body-md: 1;
+        --element-button-text-transform: {% if settings.type_button_capitalize %}uppercase{% else %}none{% endif %};
+        --element-button-letter-spacing: {{ settings.type_button_spacing | divided_by: 100.0 | append: 'em' }};
+        --element-button-font-family: {{ settings.type_button.family }}, {{ settings.type_button.fallback_families }};
+        --color-primary: {{ settings.color_button_background }};
+        border: none!important;
+      }
+
+      .add-to-cart-button{
+        --element-text-line-height--body-md: 1;
+        --element-button-font-size: var(--font-size-button-large);
+        --element-button-text-transform: {% if settings.type_button_capitalize %}uppercase{% else %}none{% endif %};
+        --element-button-letter-spacing: {{ settings.type_button_spacing | divided_by: 100.0 | append: 'em' }};
+        --element-button-font-family: {{ settings.type_button.family }}, {{ settings.type_button.fallback_families }};
+        --element-text-font-weight: 700;
+        --element-text-color: {{ settings.color_button_secondary_text }};
+        --element-button-color-secondary: {{ settings.color_button_secondary_background }};
+        box-shadow: inset 0 0 0 1px {{ settings.color_button_secondary_border }};
+      }
+
+      .add-to-cart-button:focus-visible{
+        box-shadow: 0 0 0 2px #fff, 0 0 0 5px #19f6, 0 3px 8px #0000001a;
+      }
+
+      .add-to-cart-button:not(.element-button--inverted) {
+        --element-button-color-primary: {{ settings.color_button_secondary_background }};
+        --element-button-color-secondary: {{ settings.color_text }};
+      }
+
+      .element-button{
+        box-sizing: border-box;
+      }
+
+      .product-title{
+        --element-text-color: {{ settings.color_headings }};
+      }
+
+      .vendor{
+        --element-text-color: {{ settings.color_links }};
+        text-decoration: none;
+      }
+
+      .sale-price{
+        --element-text-color: {{ settings.color_product_sale_accent}};
+      }
+
+      .compare-at-price{
+        --element-text-color: {{ settings.color_text_light }};
+      }
+
+      .variant-option-value-name-selected{
+        --element-button-color-primary: white!important;
+        --element-button-color-secondary: {{ settings.color_links }}!important;
+      }
+
+      .sku{
+        --element-text-color: {{ settings.color_text_light }};
+      }
+
+      .inventory-status--low-stock {
+        --element-text-color: {{ settings.color_products_low_stock }};
+      }
+
+      .inventory-status--in-stock {
+        --element-text-color: {{ settings.color_products_in_stock }};
+      }
+
+      .inventory-status--sold-out {
+        --element-text-color: {{ settings.color_products_no_stock }};
+      }
+
+      .overlay-lightbox__overlay {
+        z-index: 10000;
+      }
+
+      .element-text--rte ul {
+        padding-left: 20px;
+        margin: 1rem 0;
+      }
+
+      .element-text--rte table {
+        display: block;
+        border-collapse: collapse;
+        width: fit-content;
+        max-width: 100%;
+        height: auto;
+        overflow: auto;
+        white-space: nowrap;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .element-text--rte table th,
+      .element-text--rte table td {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .element-text--rte table th {
+        font-family: var(--element-text-font-family--heading);
+        font-weight: var(--element-text-font-weight--heading);
+        font-size: var(--element-text-font-size--rte-body);
+        padding: 8px;
+        text-align: left;
+        color: var(--color-primary);
+      }
+
+      .element-text--rte table td {
+        font-size: var(--element-text-font-size--rte-body);
+        padding: 0.75rem 1rem;
+      }
+      {% if template.name == 'collection'%}
+  
+    .productitem__image-container {
+      overflow: hidden !important;
+    }
+
+    .productitem--image {
+      aspect-ratio: 1 / 1 !important;
+      height: 210px !important;
+    }
+{% endif %}
+#ab-tiny-widget{
+display:none !important;
+
+}
+.answerbase-widget{
+margin:0 !important;
+}
+    </style>
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    {{ 'header-v1.css' | asset_url |stylesheet_tag }}
+
+    {% unless settings.reduce_animations %}
+      {{ 'ripple.css' | asset_url | stylesheet_tag }}
+    {% endunless %}
+
+    {% comment %}Inject theme-object begin{% endcomment %}
+    <script>
+      window.Theme = window.Theme || {};
+      window.Theme.version = '12.2.0';
+      window.Theme.name = 'Empire';
+      window.Theme.routes = {
+        root_url: '{{ routes.root_url }}',
+        account_url: '{{ routes.account_url }}',
+        account_login_url: '{{ routes.account_login_url }}',
+        account_logout_url: '{{ routes.account_logout_url }}',
+        account_register_url: '{{ routes.account_register_url }}',
+        account_addresses_url: '{{ routes.account_addresses_url }}',
+        collections_url: '{{ routes.collections_url }}',
+        all_products_collection_url: '{{ routes.all_products_collection_url }}',
+        search_url: '{{ routes.search_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_clear_url: '{{ routes.cart_clear_url }}',
+        product_recommendations_url: '{{ routes.product_recommendations_url }}',
+      };
+    </script>
+    {% comment %}Inject theme-object end{% endcomment %}
+     
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+    var u='https://www.googletagmanager.com/gtm.js?id=';j.src=
+    u+i+dl;f.parentNode.insertBefore(j,f);var o=atob('R1RNLUs4Rlc1WDRM');
+    j=d.createElement(s);j.async=true;j.src=u+o+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KLQ244XB');</script>
+    <!-- End Google Tag Manager -->
+  </head>
+
+  <body
+    class="template-{{ template.name }}"
+    data-instant-allow-query-string
+    {% if settings.reduce_animations %}
+      data-reduce-animations
+    {% endif %}
+  >
+    <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLQ244XB"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+    <script>
+      document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
+      if (window.Shopify && window.Shopify.designMode) document.documentElement.className += ' in-theme-editor';
+      if ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch))
+        document.documentElement.className = document.documentElement.className.replace(/\bno-touch\b/, 'has-touch');
+    </script>
+
+    {% comment %}Inject icon-star-symbol begin{% endcomment %}
+    <svg
+      class="icon-star-reference"
+      aria-hidden="true"
+      focusable="false"
+      role="presentation"
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="3 3 17 17"
+      fill="none"
+    >
+      <symbol id="icon-star">
+        <rect class="icon-star-background" width="20" height="20" fill="currentColor"/>
+        <path d="M10 3L12.163 7.60778L17 8.35121L13.5 11.9359L14.326 17L10 14.6078L5.674 17L6.5 11.9359L3 8.35121L7.837 7.60778L10 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </symbol>
+      <clipPath id="icon-star-clip">
+        <path d="M10 3L12.163 7.60778L17 8.35121L13.5 11.9359L14.326 17L10 14.6078L5.674 17L6.5 11.9359L3 8.35121L7.837 7.60778L10 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </clipPath>
+    </svg>
+    {% comment %}Inject icon-star-symbol end{% endcomment %}
+
+    <a class="skip-to-main" href="#site-main">{{ 'general.accessibility.skip_to_content' | t }}</a>
+    {% sections 'header-group' %}
+
+    <div style="--background-color: {{ settings.color_background }}">
+      {% render 'age-gate', id: 'page', sections: content_for_layout %}
+    </div>
+
+    <div class="intersection-target" data-header-intersection-target></div>
+    <div class="site-main-dimmer" data-site-main-dimmer></div>
+    <main id="site-main" class="site-main" aria-label="Main content" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- if settings.enable_back_to_top_button -%}
+      {%- render 'back-to-top-button' -%}
+    {%- endif -%}
+
+    {% sections 'footer-group' %}
+
+    {% comment %}
+      Below are various templates used in JavaScript
+    {% endcomment %}
+    <div style="display: none;" aria-hidden="true" data-templates>
+      {% comment %}Inject message-banner begin{% endcomment %}
+      <div
+        class="message-banner--container"
+        role="alert"
+        data-message-banner
+      >
+        <div class="message-banner--outer">
+          <div class="message-banner--inner" data-message-banner-content></div>
+
+          <button
+            class="message-banner--close"
+            type="button"
+            aria-label="{{ 'general.accessibility.close' | t }}"
+            data-message-banner-close
+          >
+            {%- render 'icon-menu-close' -%}
+          </button>
+        </div>
+      </div>
+      {% comment %}Inject message-banner end{% endcomment %}
+
+      {% comment %}Inject atc-banner begin{% endcomment %}
+      <section class="atc-banner--container" role="log" data-atc-banner>
+        <div class="atc-banner--outer">
+          <div class="atc-banner--inner">
+            <div class="atc-banner--product">
+              <h2 class="atc-banner--product-title">
+                <span class="atc-banner--product-title--icon">
+                  {% render 'icon-library', id: 'icon-checkmark' %}
+                </span>
+                {{ 'add_to_cart_banner.general.product_added' | t }}
+              </h2>
+
+              <div class="atc--product">
+                <div class="atc--product-image" data-atc-banner-product-image>
+                  {{ 'image' | placeholder_svg_tag: 'placeholder--image' }}
+                </div>
+                <div class="atc--product-details">
+                  <h2 class="atc--product-details--title" data-atc-banner-product-title></h2>
+                  <span class="atc--product-details--options" data-atc-banner-product-options></span>
+                  <span class="atc--product-details--price">
+                    <span class="atc--product-details--price-quantity" data-atc-banner-product-price-quantity></span>
+                    <span class="atc--product-details--price-value money" data-atc-banner-product-price-value></span>
+                    <span
+                      class="atc--product-details--price-discounted money"
+                      data-atc-banner-product-price-discounted
+                    ></span>
+                    <span class="atc--product-details--unit-price hidden" data-atc-banner-unit-price>
+                      {{
+                        'product.general.price_per_unit_html'
+                        | t:
+                          total_quantity: '** total_quantity **',
+                          unit_price: '** unit_price **',
+                          unit_measure: '** unit_measure **'
+                      }}
+                    </span>
+                  </span>
+                  <ul class="discount-list" data-atc-banner-product-discounts>
+                    <li class="discount-list-item">
+                      {% render 'icon-library', id: 'icon-sale-tag' %}
+                      <span class="discount-title"></span>
+                      (-<span class="money discount-amount"></span>)
+                    </li>
+                  </ul>
+                  <span class="atc--line-item-subscriptions" data-atc-banner-product-subscription-title></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="atc-banner--cart">
+              <div class="atc-banner--cart-subtotal">
+                <span class="atc-subtotal--label">
+                  {{ 'add_to_cart_banner.general.sub_total' | t }}
+                </span>
+                <span class="atc-subtotal--price money" data-atc-banner-cart-subtotal></span>
+              </div>
+
+              {%- render 'free-shipping-bar', context: 'atc-banner' -%}
+
+              <footer class="atc-banner--cart-footer">
+                <a
+                  class="button-secondary atc-button--viewcart"
+                  href="{{ routes.cart_url }}"
+                  data-atc-banner-cart-button
+                >
+                  {{ 'add_to_cart_banner.general.view_cart_html' | t: count: '<span></span>' }}
+                </a>
+                <form
+                  class="atc-banner__form"
+                  action="{{ routes.cart_url }}"
+                  method="post"
+                  aria-label="cart checkout"
+                >
+                  <button class="button-primary atc-button--checkout" type="submit" name="checkout">
+                    {% if settings.enable_checkout_lock_icon %}
+                      {% render 'icon-checkout-lock' %}
+                    {% endif %}
+                    <span>{{ 'add_to_cart_banner.general.checkout' | t }}</span>
+                  </button>
+                </form>
+              </footer>
+            </div>
+          </div>
+
+          <button
+            class="atc-banner--close"
+            type="button"
+            aria-label="{{ 'general.accessibility.close' | t }}"
+            data-atc-banner-close
+          >
+            {%- render 'icon-menu-close' -%}
+          </button>
+        </div>
+      </section>
+      {% comment %}Inject atc-banner end{% endcomment %}
+    </div>
+
+    {% comment %}
+      Modal container, used on Collections, Password, and QuickShop
+    {% endcomment %}
+    {% comment %}Inject modal begin{% endcomment %}
+    <div class="modal" data-modal-container aria-label="modal window" data-trap-focus>
+      <div class="modal-inner" data-modal-inner>
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="{{ 'general.accessibility.close' | t }}"
+          data-modal-close
+        >
+          {% render 'icon-menu-close' %}
+        </button>
+        <div class="modal-content" data-modal-content></div>
+      </div>
+    </div>
+
+    <div class="modal-1" data-modal-container-1 aria-label="modal window">
+      <div class="modal-inner" data-modal-inner>
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="{{ 'general.accessibility.close' | t }}"
+          data-modal-1-close
+        >
+          {% render 'icon-menu-close' %}
+        </button>
+        <div class="modal-content" data-modal-content></div>
+      </div>
+    </div>
+    {% comment %}Inject modal end{% endcomment %}
+
+    {% comment %}
+      Product compare drawer, shown when products are compared
+    {% endcomment %}
+    {% comment %}Inject template-allows-compare begin{% endcomment %}
+    {% assign template_allows_compare = settings.enable_product_compare %}
+    {% if template.name == 'cart' %}
+      {% assign template_allows_compare = false %}
+    {% elsif template.name == 'product' and template.suffix contains 'compare' %}
+      {% assign template_allows_compare = false %}
+    {% endif %}
+    {% comment %}Inject template-allows-compare end{% endcomment %}
+
+    {% if template_allows_compare %}
+      {% comment %}Inject product-compare-drawer begin{% endcomment %}
+      <div class="product-compare-drawer" data-product-compare-drawer>
+        <div class="product-compare-drawer__header" data-product-compare-drawer-header>
+          <h2 class="product-compare-drawer__title" data-product-compare-drawer-title>
+            {{ 'product_compare.drawer_title' | t }}
+          </h2>
+
+          <p
+            class="product-compare-drawer__notification"
+            data-product-count-one="{{ 'product_compare.drawer_notification.one' | t }}"
+            data-product-count-other="{{ 'product_compare.drawer_notification.other' | t: count: '** count **' }}"
+            data-product-compare-drawer-notification
+          >
+            {{ 'product_compare.drawer_notification' | t: count }}
+          </p>
+
+          <span class="product-compare-drawer__trigger">
+            {% render 'icon-chevron-down' %}
+          </span>
+        </div>
+
+        <div class="product-compare-drawer__container">
+          <div class="product-compare-drawer__items" data-compare-drawer-items-container>
+            <template data-product-compare-drawer-item-template>
+              <div
+                class="
+                  product-compare-drawer__item
+                  imagestyle--{% if settings.product_grid_image_crop and settings.product_grid_image_style != 'natural' %}cropped-{% endif %}{{ settings.product_grid_image_style }}
+                "
+              >
+                <div class="product-compare-drawer__image">
+                  <figure class="productitem--image" data-product-compare-drawer-image></figure>
+                </div>
+                <a class="product-compare-drawer__item-title" data-product-compare-drawer-title></a>
+                <button class="product-compare-drawer__remove" data-product-compare-drawer-remove>
+                  {% render 'icon-library', id: 'icon-remove', icon_class: 'product-compare-drawer__remove-icon' %}
+                </button>
+              </div>
+            </template>
+
+            {% for i in (1..3) %}
+              <div class="product-compare-drawer__item-placeholder" data-product-compare-drawer-item-placeholder>
+                <p class="product-compare-drawer__item-placeholder-text">
+                  {% if forloop.index == 1 %}
+                    {{ 'product_compare.drawer_notification_placeholder.first' | t }}
+                  {% elsif forloop.index == 2 %}
+                    {{ 'product_compare.drawer_notification_placeholder.second' | t }}
+                  {% elsif forloop.index == 3 %}
+                    {{ 'product_compare.drawer_notification_placeholder.third' | t }}
+                  {% endif %}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="product-compare-drawer__actions">
+            <a
+              class="
+                product-compare-drawer__link
+                button-primary
+                disabled
+              "
+              href="{{ routes.root_url }}"
+              data-product-compare-drawer-link
+              data-product-compare-drawer-link-text="{{ 'product_compare.compare' | t }}"
+            >
+              {{ 'product_compare.compare' | t }}
+            </a>
+
+            <button class="product-compare-drawer__clear-all" data-product-compare-clear-all>
+              {{ 'product_compare.drawer_clear_all' | t }}
+            </button>
+          </div>
+        </div>
+      </div>
+      {% comment %}Inject product-compare-drawer end{% endcomment %}
+    {% endif %}
+
+    {% if settings.enable_product_compare %}
+      {% comment %}Inject product-compare-breadcrumb-data begin{% endcomment %}
+      {% assign compare_breadcrumb_title = null %}
+
+      {% case request.page_type %}
+        {% when 'product' %}
+          {% assign compare_breadcrumb_title = product.title %}
+        {% when 'collection' %}
+          {% assign compare_breadcrumb_title = collection.title %}
+        {% when 'index' %}
+          {% assign compare_breadcrumb_title = 'general.breadcrumbs.home' | t %}
+        {% when 'search' %}
+          {% assign compare_breadcrumb_title = 'general.accessibility.search' | t %}
+      {% endcase %}
+
+      {% assign compare_breadcrumb_update = true %}
+
+      {% if template.name == 'product' and template.suffix contains 'compare' %}
+        {% assign compare_breadcrumb_update = false %}
+      {% endif %}
+
+      <script type="application/json" data-product-compare-breadcrumb-data>
+        {
+          "title": {{ compare_breadcrumb_title | json }},
+          "update": {{ compare_breadcrumb_update }}
+        }
+      </script>
+      {% comment %}Inject product-compare-breadcrumb-data end{% endcomment %}
+    {% endif %}
+
+    {%- if template contains 'customer' -%}
+      <script defer src="{{ 'shopify_common.js' | shopify_asset_url }}" type="text/javascript"></script>
+      <script defer src="{{ 'customer_area.js' | shopify_asset_url }}" type="text/javascript"></script>
+    {%- endif -%}
+
+    {% unless settings.reduce_animations %}
+      <script>
+        (function () {
+          var classes = {
+            block: 'pxu-lia-block',
+            element: 'pxu-lia-element',
+          };
+
+          document.querySelectorAll('[type="application/pxs-animation-mapping+json"]').forEach(function (mappingEl) {
+            const section = mappingEl.parentNode;
+            try {
+              const mapping = JSON.parse(mappingEl.innerHTML);
+              mapping.elements.forEach(function (elementSelector) {
+                section.querySelectorAll(elementSelector).forEach(function (element) {
+                  element.classList.add(classes.element);
+                });
+              });
+
+              mapping.blocks.forEach(function (blockSelector) {
+                section.querySelectorAll(blockSelector).forEach(function (block) {
+                  block.classList.add(classes.block);
+                });
+              });
+            } catch (error) {
+              console.warn('Unable to parse animation mapping', mappingEl, error);
+            }
+          });
+        })();
+      </script>
+    {% endunless %}
+
+    {%- if settings.minify_scripts -%}
+      <script
+        src="{{ 'empire.min.js' | asset_url }}"
+        data-scripts
+        data-shopify-api-url="{{ 'api.jquery.js' | shopify_asset_url }}"
+        data-shopify-countries="/services/javascripts/countries.js"
+        data-shopify-common="{{ 'shopify_common.js' | shopify_asset_url }}"
+        data-shopify-cart="{{ 'jquery.cart.js' | asset_url }}"
+        data-pxu-polyfills="{{ 'polyfills.min.js' | asset_url }}"
+        async
+      ></script>
+    {%- else -%}
+      <script
+        src="{{ 'empire.js' | asset_url }}"
+        data-scripts
+        data-shopify-api-url="{{ 'api.jquery.js' | shopify_asset_url }}"
+        data-shopify-countries="/services/javascripts/countries.js"
+        data-shopify-common="{{ 'shopify_common.js' | shopify_asset_url }}"
+        data-shopify-cart="{{ 'jquery.cart.js' | asset_url }}"
+        data-pxu-polyfills="{{ 'polyfills.min.js' | asset_url }}"
+        async
+      ></script>
+    {%- endif -%}
+    
+    {% render 'structured-data' %}
+    
+    <script>
+      (function () {
+        function handleFirstTab(e) {
+          if (e.keyCode === 9) {
+            // the "I am a keyboard user" key
+            document.body.classList.add('user-is-tabbing');
+            window.removeEventListener('keydown', handleFirstTab);
+          }
+        }
+        window.addEventListener('keydown', handleFirstTab);
+      })();
+    </script>
+
+    <script
+      src="{{ 'instantPage.min.js' | asset_url }}"
+      type="module"
+      defer
+    ></script>
+{% unless template == 'cart' %}
+   <script>
+(function () {
+
+  // Get nearest quantity selector (PER PRODUCT)
+  function getSelector(el) {
+    return el.closest('[data-quantity-selector]');
+  }
+
+  function updateMinusState(selector, input) {
+    const minQty = parseInt(selector.dataset.minQuantity, 10) || 1;
+    const minusBtn = selector.querySelector('[data-quantity-minus]');
+    const minusWrapper = selector.querySelector('[data-button-wrapper-minus]');
+    const value = parseInt(input.value, 10) || minQty;
+
+    if (value <= minQty) {
+      minusBtn?.setAttribute('disabled', 'disabled');
+      minusWrapper?.classList.add('quantity-selector__button-wrapper--disabled');
+    } else {
+      minusBtn?.removeAttribute('disabled');
+      minusWrapper?.classList.remove('quantity-selector__button-wrapper--disabled');
+    }
+  }
+
+  // 🔹 PLUS / MINUS HANDLER (EVENT DELEGATION → WORKS IN FLICKITY)
+  document.addEventListener('click', function (e) {
+
+    const plusBtn  = e.target.closest('[data-quantity-plus]');
+    const minusBtn = e.target.closest('[data-quantity-minus]');
+    if (!plusBtn && !minusBtn) return;
+
+    const selector = getSelector(e.target);
+    if (!selector) return;
+
+    e.preventDefault();
+
+    const input = selector.querySelector('[data-quantity-input]');
+    if (!input) return;
+
+    const minQty = parseInt(selector.dataset.minQuantity, 10) || 1;
+    const step   = parseInt(selector.dataset.step, 10) || 1;
+
+    let value = parseInt(input.value, 10);
+    if (isNaN(value) || value < minQty) value = minQty;
+
+    if (plusBtn)  value += step;
+    if (minusBtn) value -= step;
+
+    if (value < minQty) value = minQty;
+
+    input.value = value;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+
+    updateMinusState(selector, input);
+  });
+
+  // 🔹 MANUAL INPUT VALIDATION
+  document.addEventListener('change', function (e) {
+    const input = e.target.closest('[data-quantity-input]');
+    if (!input) return;
+
+    const selector = getSelector(input);
+    if (!selector) return;
+
+    const minQty = parseInt(selector.dataset.minQuantity, 10) || 1;
+    const step   = parseInt(selector.dataset.step, 10) || 1;
+
+    let value = parseInt(input.value, 10);
+    if (isNaN(value) || value < minQty) {
+      value = minQty;
+    }
+
+    input.value = value;
+    updateMinusState(selector, input);
+  });
+
+  // 🔹 INITIAL STATE FIX (FOR ALL PRODUCTS ON LOAD)
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-quantity-selector]').forEach(selector => {
+      const input = selector.querySelector('[data-quantity-input]');
+      if (input) updateMinusState(selector, input);
+    });
+  });
+
+})();
+</script>
+{% endunless %}
+    <script>
+setTimeout(function () {
+  document
+    .querySelectorAll('.product-recently-viewed__content .flickity-slider .productgrid--item')
+    .forEach(function (item) {
+      item.style.height = '100%';
+    });
+}, 5000);
+</script>
+<script>
+  function updateHeaderCartCount() {
+  fetch('/cart.js')
+    .then(response => response.json())
+    .then(cart => {
+      const countElements = document.querySelectorAll('[data-header-cart-count]');
+      
+      countElements.forEach(el => {
+        el.setAttribute('data-header-cart-count', cart.item_count);
+        el.textContent = '';
+      });
+    });
+}
+setInterval(()=>{
+updateHeaderCartCount();
+},1000); 
+</script>
+<script>
+function hideSections(){
+ document.querySelector('.product-recommendations--section').style.display = 'none';
+ document.querySelector('.recently-viewed--section').style.display = 'none';
+}
+</script>
+ <script>
+      (function (n, v) {
+        /* eslint-disable-next-line max-len */ if (
+          window.Shopify &&
+          window.Shopify.theme &&
+          navigator &&
+          navigator.sendBeacon &&
+          window.Shopify.designMode
+        ) {
+          if (sessionStorage.getItem('oots_beacon')) return;
+          navigator.sendBeacon(
+            'https://app.outofthesandbox.com/beacon',
+            new URLSearchParams({
+              shop_domain: window.Shopify.shop.toLowerCase(),
+              shop_id: '{{ shop.id }}',
+              shop_email: '{{ shop.email }}',
+              theme_name: n.toLowerCase(),
+              theme_version: v.toLowerCase(),
+              theme_store_id: window.Shopify.theme.theme_store_id,
+              theme_id: window.Shopify.theme.id,
+              theme_role: window.Shopify.theme.role,
+            })
+          );
+          sessionStorage.setItem('oots_beacon', '');
+        }
+      })('empire', '12.2.0');
+    </script>
+    <script>
+  window.__predictiveSearchCustomer = {
+    loggedIn: {% if customer %}true{% else %}false{% endif %},
+    tags: {% if customer %}{{ customer.tags | json }}{% else %}[]{% endif %}
+  };
+</script>
+  <script>
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options) {
+    if (typeof url === 'string' && url.includes('/search/suggest')) {
+      const newUrl = new URL(url, window.location.origin);
+      // Set limit per resource type
+      newUrl.searchParams.set('resources[limit:product]', '8');
+      newUrl.searchParams.set('resources[limit:collection]', '4');
+      newUrl.searchParams.set('resources[limit:page]', '4');
+      newUrl.searchParams.set('resources[limit:article]', '4');
+      newUrl.searchParams.set('resources[limit:query]', '4');
+      return originalFetch(newUrl.toString(), options);
+    }
+    return originalFetch.apply(this, arguments);
+  };
+})();
+</script>
+<script>
+(function() {
+  const originalFetch = window.fetch;
+    let debounceTimer = null;
+  const skuCache = {}; // Cache SKUs by handle to avoid refetching
+
+  const RESTRICTED_PRODUCT_TAG = 'GMSMX13';
+  const REQUIRED_CUSTOMER_TAG = 'MX13';
+
+  // Same MX13 rule as products: predictive search will not list these collections unless the customer is allowed.
+  // Confirm handle: Admin → Collections → open collection → URL is /collections/your-handle
+  const RESTRICTED_COLLECTION_HANDLES = ['gms-mx13-restricted-key-system'];
+  const RESTRICTED_COLLECTION_TITLES_NORMALIZED = ['gms mx13 restricted key system'];
+
+  function customerMayViewRestrictedProducts() {
+    const ctx = window.__predictiveSearchCustomer;
+    if (!ctx || !ctx.loggedIn || !Array.isArray(ctx.tags)) return false;
+    return ctx.tags.some(function(t) { return String(t).trim() === REQUIRED_CUSTOMER_TAG; });
+  }
+
+  // Shopify /products/{handle}.js returns tags as an array, not a comma string.
+  function normalizeProductTagList(tags) {
+    if (!tags) return [];
+    if (Array.isArray(tags)) {
+      return tags.map(function(t) { return String(t).trim(); }).filter(Boolean);
+    }
+    if (typeof tags === 'string') {
+      return tags.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function productHasRestrictedTag(tags) {
+    var want = RESTRICTED_PRODUCT_TAG.toLowerCase();
+    return normalizeProductTagList(tags).some(function(t) { return t.toLowerCase() === want; });
+  }
+
+  function filterProductsByCustomerAccess(products) {
+    var allowed = customerMayViewRestrictedProducts();
+    return products.filter(function(p) {
+      if (!productHasRestrictedTag(p._productTagsCsv)) return true;
+      return allowed;
+    });
+  }
+
+  function collectionHandleFromSuggest(c) {
+    if (c && typeof c.handle === 'string' && c.handle.trim()) return c.handle.trim().toLowerCase();
+    var url = c && c.url ? String(c.url) : '';
+    try {
+      var u = new URL(url, window.location.origin);
+      var m = u.pathname.match(/\/collections\/([^/?#]+)/);
+      return m ? decodeURIComponent(m[1]).toLowerCase() : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function normalizeCollectionTitleForMatch(title) {
+    return String(title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function collectionIsMx13Restricted(c) {
+    var h = collectionHandleFromSuggest(c);
+    if (h && RESTRICTED_COLLECTION_HANDLES.indexOf(h) !== -1) return true;
+    var t = normalizeCollectionTitleForMatch(c && c.title);
+    if (t && RESTRICTED_COLLECTION_TITLES_NORMALIZED.indexOf(t) !== -1) return true;
+    return false;
+  }
+
+  function filterCollectionsByCustomerAccess(collections) {
+    var allowed = customerMayViewRestrictedProducts();
+    return collections.filter(function(c) {
+      if (!collectionIsMx13Restricted(c)) return true;
+      return allowed;
+    });
+  }
+
+  // ================================================
+  // FETCH SKU BY HANDLE — cached
+  // ================================================
+  async function fetchProductDetails(handle) {
+    if (skuCache[handle]) return skuCache[handle];
+    try {
+      const res = await originalFetch(`/products/${handle}.js`);
+      const data = await res.json();
+      const result = {
+        sku: data?.variants?.[0]?.sku || '',
+        variants: data?.variants || [],
+        tags: data?.tags != null ? data.tags : ''
+      };
+      skuCache[handle] = result;
+      return result;
+    } catch (e) {
+      return { sku: '', variants: [], tags: '' };
+    }
+  }
+
+  // ================================================
+  // FETCH PRODUCTS — SKU first then keyword
+  // ================================================
+  async function fetchProducts(searchTerm) {
+    const [skuRes, kwRes] = await Promise.all([
+      originalFetch(`/search/suggest.json?q=${encodeURIComponent(searchTerm)}&resources[type]=product&resources[limit]=5&resources[options][fields]=variants.sku`),
+      originalFetch(`/search/suggest.json?q=${encodeURIComponent(searchTerm)}&resources[type]=product&resources[limit]=8&resources[options][fields]=title,product_type,variants.title,vendor,tag`)
+    ]);
+
+    const [skuData, kwData] = await Promise.all([skuRes.json(), kwRes.json()]);
+
+    const skuProducts = skuData?.resources?.results?.products || [];
+    const kwProducts = kwData?.resources?.results?.products || [];
+
+    // Merge — SKU first, no duplicates
+    const seen = new Set();
+    const merged = [];
+    for (const p of [...skuProducts, ...kwProducts]) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        merged.push(p);
+      }
+    }
+
+    // Fetch SKUs for all merged products in parallel
+    const details = await Promise.all(
+      merged.map(p => fetchProductDetails(p.handle))
+    );
+
+    // Attach SKU and variants to each product
+    merged.forEach((p, i) => {
+      p.sku = details[i].sku;
+      p.allVariants = details[i].variants;
+      var fromJs = details[i].tags;
+      var fromSuggest = p.tags != null ? p.tags : p.tag;
+      p._productTagsCsv = normalizeProductTagList(fromJs).concat(normalizeProductTagList(fromSuggest));
+    });
+
+    // Re-sort — products whose SKU matches search term come first
+    const term = searchTerm.toLowerCase();
+    merged.sort((a, b) => {
+      const aSkuMatch = a.sku?.toLowerCase().includes(term) ? 0 : 1;
+      const bSkuMatch = b.sku?.toLowerCase().includes(term) ? 0 : 1;
+      return aSkuMatch - bSkuMatch;
+    });
+
+    return filterProductsByCustomerAccess(merged);
+  }
+
+  // ================================================
+  // FETCH COLLECTIONS / PAGES / ARTICLES
+  // ================================================
+  async function fetchExtra(searchTerm) {
+    const res = await originalFetch(`/search/suggest.json?q=${encodeURIComponent(searchTerm)}&resources[type]=collection,page,article&resources[limit]=5`);
+    const data = await res.json();
+    return {
+      collections: data?.resources?.results?.collections || [],
+      pages: data?.resources?.results?.pages || [],
+      articles: data?.resources?.results?.articles || []
+    };
+  }
+
+  // ================================================
+  // RENDER EVERYTHING
+  // ================================================
+  function renderAll(products, collections, pages, articles) {
+    const flydown = document.querySelector('.search-flydown--results');
+    if (!flydown) return;
+
+    flydown.innerHTML = `<style>
+  .search-flydown[data-live-search-flydown]{
+      --open-height: auto !important;
+  }
+  .search-flydown__group-title{
+    text-transform: uppercase;
+    background: #fafafa !important;
+    padding: 6px 12px 5px;
+    color: #2226 !important;
+    margin: 0;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    font-family: 'Barlow';
+    line-height: 20px;
+}
+.search-flydown--product-title, .search-flydown__list-item a{
+    line-height: 20px;
+    font-size: 14px !important;
+    color: #197bbd !important;
+    padding-top: 0;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.search-flydown--product-title{
+font-weight:bold;
+}
+.search-flydown--product__price{
+font-size: 12px !important;
+margin:4px 0px !important;
+}
+.search-flydown--product__price .price__current{
+font-size: 12px !important;
+}
+.search-flydown__continue{
+font-size: 14px !important;
+}
+.search-flydown__continue:focus {
+    outline: none !important;
+    outline-offset: 0px !important;
+}
+.search-flydown__no-results{
+width:100% !important;
+}
+@media screen and (min-width:1024px){
+.search-flydown--product-items ul.search-flydown__group-list{
+  display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+.search-flydown--results.visible[data-animation-state="visible"]{
+      display: flex;
+    flex-direction: row-reverse;
+  }
+}
+@media screen and (max-width:1024px){
+.search-flydown__queries-collections{
+padding-left:0px !important;
+} 
+}
+</style><div id="shopify-section-predictive-search" class="shopify-section"><div></div></div>`;
+
+    const blogPages = [...pages, ...articles];
+
+    // ── PRODUCTS ──
+    if (products.length > 0) {
+      const productItems = document.createElement('div');
+      productItems.classList.add('search-flydown--product-items');
+
+      const productListHTML = products.map(product => {
+        const price = (product.price / 1).toFixed(2);
+        const image = product.featured_image?.url || '';
+        const sku = product.sku || '';
+        return `
+          <li>
+            <a class="search-flydown--product" href="${product.url}">
+              ${image ? `<figure class="search-flydown--product-image">
+                <img src="${image}" alt="${product.title}" style="width:70px;height:70px;object-fit:cover;">
+              </figure>` : ''}
+              <div class="search-flydown--product-text">
+                <span class="search-flydown--product-title">${product.title}</span>
+                ${sku ? `<p class="search-flydown--product__price">SKU: ${sku}</p>` : ''}
+                <div class="price search-flydown--product__price">
+                  <div class="price__current">
+                    <span class="money">$${price}</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        `;
+      }).join('');
+
+      productItems.innerHTML = `
+        <h3 class="search-flydown__group-title">Products</h3>
+        <ul class="search-flydown__group-list">${productListHTML}</ul>
+      `;
+      flydown.appendChild(productItems);
+    }
+
+    // ── COLLECTIONS + BLOG & PAGES ──
+    if (collections.length > 0 || blogPages.length > 0) {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('search-flydown__queries-collections-pages');
+
+      if (collections.length > 0) {
+        const section = document.createElement('div');
+        section.classList.add('search-flydown__queries-collections');
+        section.innerHTML = `
+          <h3 class="search-flydown__group-title">Collections</h3>
+          <ul class="search-flydown__group-list">
+            ${collections.map(c => `
+              <li class="search-flydown__list-item">
+                <a href="${c.url}">${c.title}</a>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+        wrapper.appendChild(section);
+      }
+
+      if (blogPages.length > 0) {
+        const section = document.createElement('div');
+        section.classList.add('search-flydown__pages-posts-items');
+        section.innerHTML = `
+          <h5 class="search-flydown__group-title">Blog & Pages</h5>
+          <ul class="search-flydown__group-list search-flydown__pages-posts-items-list">
+            ${blogPages.map(item => `
+              <li class="search-flydown__list-item">
+                <a href="${item.url}">${item.title}</a>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+        wrapper.appendChild(section);
+      }
+
+      flydown.appendChild(wrapper);
+    }
+
+    if (products.length === 0 && collections.length === 0 && blogPages.length === 0) {
+      flydown.innerHTML += `<p class="search-flydown__no-results">No results found</p>`;
+    }
+  }
+
+  // ================================================
+  // MAIN SEARCH
+  // ================================================
+  async function runSearch(searchTerm) {
+    if (!searchTerm || searchTerm.trim().length === 0) return;
+
+    const [products, { collections, pages, articles }] = await Promise.all([
+      fetchProducts(searchTerm),
+      fetchExtra(searchTerm)
+    ]);
+
+    renderAll(products, filterCollectionsByCustomerAccess(collections), pages, articles);
+  }
+
+  // ================================================
+  // INTERCEPT THEME FETCH
+  // ================================================
+  window.fetch = function(url, options) {
+    if (typeof url === 'string' && url.includes('/search/suggest')) {
+      const urlObj = new URL(url, window.location.origin);
+      const searchTerm = urlObj.searchParams.get('q') || '';
+
+      const emptyHTML = `<div id="shopify-section-predictive-search" class="shopify-section"><div></div></div>`;
+
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        runSearch(searchTerm);
+      }, 250);
+
+      return Promise.resolve(new Response(emptyHTML, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' }
+      }));
+    }
+
+    return originalFetch.apply(this, arguments);
+  };
+
+})();
+</script>
+  </body>
+</html>

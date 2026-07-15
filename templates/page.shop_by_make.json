@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-shop_by_make",
+      "custom_css": [
+        ".page-content {max-width: 1400px;}",
+        ".make-title{text-align: center}"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-author",
+      "custom_css": [
+        ".page-content {max-width: 1400px;}"
+      ],
+      "settings": {
+        "show_rss_link": true,
+        "show_date": true,
+        "show_author": true,
+        "show_excerpt": true,
+        "featured_post": "",
+        "posts_per_page_range": 9
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

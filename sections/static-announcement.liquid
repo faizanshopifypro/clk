@@ -1,0 +1,233 @@
+ {% assign logo_height = section.settings.logo_height | default: 100 %}
+{% assign logo_width = section.settings.logo_width | default: 200 %}
+{% assign logo_size = logo_width | prepend: 'x' %}
+
+{% style %}
+  .site-logo {
+    max-width: {{ logo_width }}px;
+  }
+
+  .site-logo-image {
+    max-height: {{ logo_height }}px;
+  }
+{% endstyle %}
+ <div class="anosment-bar">
+        <div class="menus-name tablet-desgin">
+          <div class="hamburger-icon">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menu</span>
+          </div>
+          
+           <div class="menu-preview">
+            <ul class="hamburger-menu">
+              {% comment %} <li><a href="#">Find a Store</a></li>
+              <li><a href="#">Store Services</a></li>
+              <hr> {% endcomment %}
+              <div class="close-hamburger">
+           <i class="fa-solid fa-x"></i>
+            <span>Close</span>
+          </div>
+              {% assign popular = section.settings.quick_links %}
+              {% if popular != blank %}
+              <ul class="most-popular">
+                <span>Most Popular</span>
+                {% for plink in popular.links %}
+                {%- comment %}<locksmith:5bac>{% endcomment -%}
+                  {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: plink, subject_parent: popular, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+                {%- comment %}</locksmith:5bac>{% endcomment -%}
+                <li><a href="{{ plink.url }}">{{plink.title }}</a></li>
+                {% endfor %}
+              </ul>
+              <hr>
+            {% endif %}
+              {% assign menu = section.settings.menu %}
+              {%  if menu != blank %}
+                {% for link in menu.links %}
+              {%- comment %}<locksmith:b669>{% endcomment -%}
+                {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: link, subject_parent: menu, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+              {%- comment %}</locksmith:b669>{% endcomment -%}
+              <li class="postion">
+                <div class="name-icon">
+                  <a href="{{ link.url }}"><span>{{ link.title }}</span></a>
+                  <div class="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      focusable="false"
+                    >
+                      <path fill="currentColor"
+                          d="M6 21.033 14.36 12 6 2.967 7.82 1 18 12 7.82 23 6 21.033Z">
+                      </path>
+                    </svg>
+                  </div>
+                </div>
+                {% if link.links.size > 0 %}
+                <ul class="advice-link">
+                  {% for childlink in link.links %}
+                  {%- comment %}<locksmith:6886>{% endcomment -%}
+                    {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: childlink, subject_parent: link, variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+                  {%- comment %}</locksmith:6886>{% endcomment -%}
+                  <li><a href="{{ childlink.url }}">{{childlink.title}}</a></li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              </li>
+              <hr>
+              {% endfor %}
+            {% endif %}
+              <li><a href="/pages/contact-us">Contact Us</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="header-offer-logo">
+          <div class="header-logo">
+            <div class="site-header-logo">
+        <a
+          class="site-logo"
+          href="{{ routes.root_url }}">
+          {% if section.settings.logo %}
+            {% assign logo_alt = section.settings.logo.alt %}
+            {% if logo_alt == '' %}
+              {% assign logo_alt = shop.name | strip %}
+            {% endif %}
+
+            {%
+              render 'rimg',
+              img: section.settings.logo,
+              class: 'site-logo-image',
+              alt: logo_alt,
+              size: logo_size,
+              focal_point: section.settings.logo.presentation.focal_point,
+            %}
+          {% else %}
+            {% if template == 'index' %}
+              <h1 class="site-logo-text">
+                {{ shop.name }}
+              </h1>
+            {% else %}
+              <span class="site-logo-text">
+                {{ shop.name }}
+              </span>
+            {% endif %}
+          {% endif %}
+        </a>
+      </div>
+          </div>
+        
+         
+         
+        </div>
+        <div class="login-cart">
+          {% render 'site-header-actions', announcement_text:section.settings.announcement_text, announcement_link:section.settings.announcement_link, announcement_text_mobile:section.settings.announcement_text_mobile %}
+          <div class="site-header-cart">
+        <a class="site-header-cart--button" href="{{ routes.cart_url }}" onclick="event.preventDefault(); window.location.href='/cart/';">
+          <span
+            class="site-header-cart--count {% if cart.item_count > 0 %}visible{% endif %}"
+            data-header-cart-count="{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}">
+          </span>
+          <span class="site-header-cart-icon site-header-cart-icon--svg">
+            {% if section.settings.cart_icon == 'icon-bag' %}
+              {% render 'icon-library', id: 'icon-bag' %}
+            {% else %}
+              {% render 'icon-library', id: 'icon-cart' %}
+             {% endif %}
+          </span>
+          <span class="visually-hidden">{{ 'general.accessibility.cart' | t }}</span>
+        </a>
+      </div>
+        </div>
+      </div>
+
+{% schema %}
+{
+  "name": "t:sections.announcement_bar.name",
+  "class": "site-announcement",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.announcement_bar.header_1.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.logo.label",
+      "info": "t:sections.header.logo.info"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "t:sections.header.logo_height.label",
+      "min": 40,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "t:sections.header.logo_width.label",
+      "min": 150,
+      "max": 250,
+      "step": 1,
+      "unit": "px",
+      "default": 150,
+      "info": "t:sections.header.logo_width.info"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.header.menu.label",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "quick_links",
+      "label": "t:sections.header.secondary_menu.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "t:sections.announcement_bar.show_announcement.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "homepage_announcement",
+      "label": "t:sections.announcement_bar.homepage_announcement.label",
+      "default": false
+    },
+    {
+      "id": "announcement_text",
+      "type": "textarea",
+      "label": "t:sections.announcement_bar.announcement_text.label",
+      "default": "Announce something here"
+    },
+    {
+      "id": "announcement_text_mobile",
+      "type": "textarea",
+      "label": "Sub Text"
+    },
+    {
+      "id": "announcement_link",
+      "type": "url",
+      "label": "t:sections.announcement_bar.announcement_link.label"
+    },
+    {
+      "id": "announcement_color",
+      "type": "color",
+      "label": "t:sections.announcement_bar.announcement_color.label",
+      "default": "#000000"
+    },
+    {
+      "id": "announcement_background",
+      "type": "color",
+      "label": "t:sections.announcement_bar.announcement_background.label",
+      "default": "#f5f3ed"
+    }
+  ]
+}
+
+{% endschema %}
